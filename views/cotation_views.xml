@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="cotation_list_view" model="ir.ui.view">
+        <field name="name">cotation.list.view</field>
+        <field name="model">we.cotation</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="number"/>
+                <field name="revision"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    <record id="cotation_form_view" model="ir.ui.view">
+        <field name="name">cotation.form.view</field>
+        <field name="model">we.cotation</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group string="General">
+                            <field name="number"/>
+                            <field name="revision"/>
+                            <field name="by_piece" /> 
+                        </group>
+                        <group>
+                            <field name="workcenters" />
+                        </group>
+                    </group>
+                    <label for="products"/>
+                    <field name="products" />
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="cotation_action" model="ir.actions.act_window">
+        <field name="name">Cotation</field>
+        <field name="res_model">we.cotation</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <!-- <menuitem id="menu_mrp_plm_config_stage" action="mrp_plm_config_stage_action" parent="menu_mrp_plm_configuration" name="Stage" sequence="2"/> -->
+</odoo>

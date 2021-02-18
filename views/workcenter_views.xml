@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<odoo>
+   <record id="cotation_workcenter_template_list_view" model="ir.ui.view">
+        <field name="name">cotation.workcenter.template.list.view</field>
+        <field name="model">we.cotation.workcenter.template</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record id="cotation_stage_form_view" model="ir.ui.view">
+        <field name="name">cotation.workcenter.template.form.view</field>
+        <field name="model">we.cotation.workcenter.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group string="General">
+                            <field name="name"/>
+                            
+                        </group>
+                    </group>
+                    
+                </sheet>
+            </form>
+        </field>
+    </record>
+     <record id="cotation_workcenter_template_action" model="ir.actions.act_window">
+        <field name="name">Workcenters Templates</field>
+        <field name="res_model">we.cotation.workcenter.template</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem 
+            id="menu_cotation_workcenter_template"
+            action="cotation_workcenter_template_action"
+            parent="menu_cotation_configuration"
+            name="Workcenters"
+            sequence="2"/>
+</odoo>

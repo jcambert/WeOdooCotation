@@ -2,4 +2,4 @@
 from odoo.exceptions import AccessError, UserError
 from odoo import models, fields, api, _
 class WeCotationBom(models.Model):
-    _inherit=['mrp.bom']
+    _name='we.cotation.bom'

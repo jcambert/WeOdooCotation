@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_cotation" model="ir.module.category" >
+        <field name="name">Quotation</field>
+        <field name="description">Category For Quotation</field>
+        <field name="sequence">44</field>
+        <!-- <field name="group">ERP /PLM</field> -->
+    </record>
+    <record id="group_cotation_user" model="res.groups">
+        <field name="name">Quotation Manager</field>
+        <field name="category_id" ref="module_category_cotation"/>
+    </record>
+</odoo>
