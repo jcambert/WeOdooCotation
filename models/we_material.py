@@ -3,6 +3,7 @@ from odoo.exceptions import AccessError, UserError
 from odoo import models, fields, api, _
 class WeGenericMaterialTemplate(models.Model):
     _name='we.cotation.generic.material.template'
+    _inherit=['mail.activity.mixin','mail.thread']
     _description = 'Material Generic Description'
     _sql_constraints = [
         ('we_cotation_generic_material_name_uniq', 'unique (name)', "Name already exists !"),

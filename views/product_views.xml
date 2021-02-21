@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="we_cotation_product_list_view" model="ir.ui.view">
+        <field name="name">we.cotation.product.list.view</field>
+        <field name="model">we.cotation.product</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="indice" />
+                <field name="designation"/>
+                <field name="material_cost" />
+                <field name="component_cost" />
+                <field name="preparation_cost" />
+                <field name="mo_cost" />
+                <!-- <field name="hardness" widget="badge"/> -->
+            </tree>
+        </field>
+    </record>
+    <record id="we_cotation_product_form_view" model="ir.ui.view">
+        <field name="name">we.cotation.product.form.view</field>
+        <field name="model">we.cotation.product</field>
+        <field name="arch" type="xml">
+            <form string="Product">
+                <header></header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                    <field name="id" invisible="False"/>
+                    <div class="oe_title">
+                        <label class="oe_edit_only" for="name" string="Product Name"/>
+                        <h1>
+                            <field name="name" placeholder="Product Name"/>
+                        </h1>
+                        <label for="indice" string="Indice"/>
+                        <field name="indice" />
+                        <label for="designation" string="Designation"/>
+                        <field name="designation"/>
+                    </div>
+
+                    <notebook>
+                        <page name="general_information" string="General">
+                            <group>
+                                <group name="group_general" string="Administrative">
+                                    <field name="active" invisible="1"/>
+                                    <field name="cost_administrative" />
+                                </group>
+                                <group name="group_study" string="Study">
+                                    <field name="time_study" />
+                                    <field name="cost_study" />
+                                    <field name="cost_tool" />
+                                </group>
+                                <group name="group_margin" string="Margins">
+                                    <field name="material_margin" />
+                                    <field name="subcontracting_margin" />
+                                </group>
+                                <group name="group_divers" string="Divers">
+                                    <field name="note" />
+                                    <field name="deviser_id" />
+                                </group>
+                            </group>
+                        </page>
+                        <page name="costs" string="Costs">
+                            <group>
+                                <group >
+                                    <field name="material_cost" />
+                                    <field name="component_cost" />
+                                    <field name="preparation_cost" />
+                                    <field name="mo_cost" />
+                                </group>
+                            </group>
+
+                        </page>
+                        <!-- <page name="components" string="Components">
+                            <label for="components"></label>
+                            <field name="components" widget="many2many"/>
+                        </page>
+                        <page name="operations" string="Operations">
+                            <label for="operations"></label>
+                            <field name="operations" widget="many2one" />
+                        </page> -->
+                    </notebook>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="we_cotation_product_form_view_bom_button" model="ir.ui.view">
+        <field name="name">we.cotation.product.form.view.procurement</field>
+        <field name="model">we.cotation.product</field>
+        <field name="groups_id" eval="[(4, ref('WeOdooCotation.group_cotation_user'))]"/>
+        <field name="inherit_id" ref="we_cotation_product_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" name="%(template_open_bom)d"  type="action" icon="fa-flask">
+                    <field string="Bill of Materials" name="bom_count" widget="statinfo" />
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="we_cotation_product_action" model="ir.actions.act_window">
+        <field name="name">Products</field>
+        <field name="res_model">we.cotation.product</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No product found. Let's create one!
+            </p>
+            <p>
+                Define the components and finished products you wish to use in
+                bill of materials and manufacturing orders.
+            </p>
+        </field>
+    </record>
+    <menuitem id="we_cotation_product_menu" action="we_cotation_product_action" parent="we_cotation_base_menu" name="Products" sequence="2"/>
+</odoo>

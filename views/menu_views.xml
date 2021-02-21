@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem id="menu_cotation_root" name="Quotation" sequence="999"/>
+    <menuitem id="we_cotation_root_menu" name="Quotation" sequence="999" groups="WeOdooCotation.group_cotation_user"/>
 
-    <menuitem id="menu_cotation_base" parent="menu_cotation_root" name="Base" sequence="10"/>
-
-    <menuitem id="menu_cotation_cotation"
-            name="Quotations"
-            action="cotation_action"
-            parent="menu_cotation_base" sequence="1"/>
+    <menuitem id="we_cotation_base_menu" parent="we_cotation_root_menu" name="Base" sequence="10" groups="WeOdooCotation.group_cotation_user"/>    
     
-    
-    <menuitem id="menu_cotation_configuration" parent="menu_cotation_root" name="Configuration" sequence="100" groups="WeOdooCotation.group_cotation_user"/>
+    <menuitem id="we_cotation_configuration_menu" parent="we_cotation_root_menu" name="Configuration" sequence="100" groups="WeOdooCotation.group_cotation_user"/>
 
     
 </odoo>

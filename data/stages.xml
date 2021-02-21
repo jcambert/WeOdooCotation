@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data >
+        <!-- <record forcecreate="True" model="we.cotation.stage" id="stage_">
+            <field name="name"></field>
+            <field name="sequence"></field>
+            <field name="fold"></field>
+        </record> -->
+        <record forcecreate="True" model="we.cotation.stage" id="stage_draft">
+            <field name="name">Draft</field>
+            <field name="sequence">1</field>
+            <field name="fold">False</field>
+        </record>
+        <record forcecreate="True" model="we.cotation.stage" id="stage_progress">
+            <field name="name">In progress</field>
+            <field name="sequence">2</field>
+            <field name="fold">False</field>
+        </record>
+        <record forcecreate="True" model="we.cotation.stage" id="stage_declined">
+            <field name="name">Declined</field>
+            <field name="sequence">3</field>
+            <field name="fold">True</field>
+        </record>
+        <record forcecreate="True" model="we.cotation.stage" id="stage_approved">
+            <field name="name">Approved</field>
+            <field name="sequence">4</field>
+            <field name="fold">True</field>
+        </record>
+    </data>
+</odoo>

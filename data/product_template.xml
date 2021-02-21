@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data >
+        <!-- <record forcecreate="True" model="we.cotation.product.template" id="product_template_">
+            <field name="name"></field>
+            <field name="cost_administrative"></field>
+            <field name="time_study"></field>
+            <field name="cost_study" ></field>
+            <field name="cost_tool"></field>
+            <field name="material_margin"></field>
+            <field name="subcontracting_margin"></field>
+            <field name="note" ></field>
+        </record> -->
+        <record model="we.cotation.product.template" id="product_template_default">
+            <field name="cost_administrative">45</field>
+            <field name="time_study">0.5</field>
+            <field name="cost_study" >60</field>
+            <field name="cost_tool">0</field>
+            <field name="material_margin">35</field>
+            <field name="subcontracting_margin">45</field>
+        </record>
+    </data>
+</odoo>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <odoo>
-   <record id="cotation_workcenter_template_list_view" model="ir.ui.view">
-        <field name="name">cotation.workcenter.template.list.view</field>
+    <record id="we_cotation_workcenter_template_list_view" model="ir.ui.view">
+        <field name="name">we.cotation.workcenter.template.list.view</field>
         <field name="model">we.cotation.workcenter.template</field>
         <field name="arch" type="xml">
             <tree>
@@ -9,32 +9,43 @@
             </tree>
         </field>
     </record>
-    <record id="cotation_stage_form_view" model="ir.ui.view">
-        <field name="name">cotation.workcenter.template.form.view</field>
+    <record id="we_cotation_stage_form_view" model="ir.ui.view">
+        <field name="name">we.cotation.workcenter.template.form.view</field>
         <field name="model">we.cotation.workcenter.template</field>
         <field name="arch" type="xml">
             <form>
+                <header></header>
                 <sheet>
                     <group>
                         <group string="General">
                             <field name="name"/>
-                            
+                            <field name="default_time_prep" />
+                            <field name="base_time" />
+                            <field name="helps" />
+                        </group>
+                        <group  string="PR Costs">
+                            <field name="cost_time_prep_pr" />
+                            <field name="cost_time_exec_pr" />
+                        </group>
+                        <group string="PV Costs">
+                            <field name="cost_time_prep_pv" />
+                            <field name="cost_time_exec_pv" />
                         </group>
                     </group>
-                    
+
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
             </form>
         </field>
     </record>
-     <record id="cotation_workcenter_template_action" model="ir.actions.act_window">
+    <record id="we_cotation_workcenter_template_action" model="ir.actions.act_window">
         <field name="name">Workcenters Templates</field>
         <field name="res_model">we.cotation.workcenter.template</field>
         <field name="view_mode">tree,form</field>
     </record>
-    <menuitem 
-            id="menu_cotation_workcenter_template"
-            action="cotation_workcenter_template_action"
-            parent="menu_cotation_configuration"
-            name="Workcenters"
-            sequence="2"/>
+    <menuitem id="we_cotation_workcenter_template_menu" action="we_cotation_workcenter_template_action" parent="we_cotation_configuration_menu" name="Workcenters" sequence="2"/>
 </odoo>

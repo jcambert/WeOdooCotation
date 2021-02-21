@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data >
+        <!-- <record forcecreate="True" model="we.cotation.workcenter.template" id="wkc_tpl_">
+            <field name="name"></field>
+            <field name="base_time"></field>
+            <field name="cost_time_prep_pr"></field>
+            <field name="cost_time_exec_pr"></field>
+            <field name="cost_time_prep_pv"></field>
+            <field name="cost_time_exec_pv"></field>
+            <field name="default_time_prep"></field>
+            <field name="helps"></field>
+        </record> -->
+        <record model="we.cotation.workcenter.template" id="wkc_tpl_laser">
+            <field name="name">Laser bystronic</field>
+            <field name="base_time">0.0</field>
+            <field name="cost_time_prep_pr">60</field>
+            <field name="cost_time_exec_pr">60</field>
+            <field name="cost_time_prep_pv">110</field>
+            <field name="cost_time_exec_pv">110</field>
+            <field name="default_time_prep">0.3</field>
+            <field name="helps">Voir Calcul</field>
+        </record>
+        <record model="we.cotation.workcenter.template" id="wkc_tpl_plage_lt_200">
+            <field name="name">Pliage &lt; 200</field>
+            <field name="base_time">0.03</field>
+            <field name="cost_time_prep_pr">60</field>
+            <field name="cost_time_exec_pr">60</field>
+            <field name="cost_time_prep_pv">70</field>
+            <field name="cost_time_exec_pv">75</field>
+            <field name="default_time_prep">0.2</field>
+            <field name="helps">Nbre de plis</field>
+        </record>
+    </data>
+</odoo>

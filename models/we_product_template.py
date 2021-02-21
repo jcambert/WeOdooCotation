@@ -1,24 +1,25 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import models, fields, api,_
+from odoo.exceptions import AccessError, UserError,ValidationError
 
 
 class WeProductTemplate(models.Model):
     """ Template Model for cotation processing
     """
-    # _inherit = ['product.template']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _name='we.cotation.product.template'
     _description='Cotation Product Templates'
     _order = "name"
-
+    name = fields.Char('Template Name', required=True, tracking=True,default=_("Default"))
     active = fields.Boolean(default=True,tracking=True)
-    time_study = fields.Float('Study Duration', digits=(16, 2), default=9.0,help="Standard time study duration  (in minutes)",tracking=True)
-    cost_study = fields.Integer('Study Cost',default='60',help="Standard cost study",tracking=True)
-    cost_administrative = fields.Integer('Administrative Cost',default='45',help="Standard cost administative",tracking=True)
-    cost_tool = fields.Integer('Tool Cost',default='0',help="Standard cost tool",tracking=True)
-    material_margin = fields.Integer('Material Margin',default='35',help="Standard material margin (in percentage)",tracking=True)
-    subcontracting_margin = fields.Integer('Subcontracting Margin',default='45',help="Standard subcontracting margin (in percentage)",tracking=True)
-    note = fields.Char('Note',default='',tracking=True,help="Standard note")
+    time_study = fields.Float('Study Duration', digits=(16, 2), default=9.0,help="Standard time study duration  (in minutes)")
+    cost_study = fields.Integer('Study Cost',default='60',help="Standard cost study")
+    cost_administrative = fields.Integer('Administrative Cost',default='45',help="Standard cost administative")
+    cost_tool = fields.Integer('Tool Cost',default='0',help="Standard cost tool")
+    material_margin = fields.Integer('Material Margin',default='35',help="Standard material margin (in percentage)")
+    subcontracting_margin = fields.Integer('Subcontracting Margin',default='45',help="Standard subcontracting margin (in percentage)")
+    note = fields.Char('Note',default='',help="Standard note")
 
     @api.constrains('time_study')
     def _check_time_study(self):

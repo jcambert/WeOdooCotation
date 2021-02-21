@@ -1,27 +1,91 @@
 <?xml version="1.0"?>
 <odoo>
-    <record id="cotation_list_view" model="ir.ui.view">
-        <field name="name">cotation.list.view</field>
+    <record id="we_cotation_kanban_view" model="ir.ui.view">
+        <field name="name">we.cotation.kanban.view</field>
+        <field name="model">we.cotation</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" class="oe_background_grey o_kanban_dashboard o_project_kanban o_emphasize_colors" quick_create="false" sample="1">
+
+                <field name="number"/>
+                <field name="revision"/>
+                <field name="stage_id"/>
+                <field name="color"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="o_dropdown_kanban dropdown" groups="base.group_user">
+                                <a role="button" class="dropdown-toggle o-no-caret btn" data-toggle="dropdown" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                    <span class="fa fa-ellipsis-v"/>
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <t t-if="widget.editable">
+                                        <a type="set_cover" class="dropdown-item" role="menuitem">Set Cover Image</a>
+                                    </t>
+                                    <t t-if="widget.editable">
+                                        <a type="edit" class="dropdown-item" role="menuitem">Edit Task</a>
+                                    </t>
+                                    <t t-if="widget.deletable">
+                                        <a type="delete" class="dropdown-item" role="menuitem">Delete</a>
+                                    </t>
+                                    <ul class="oe_kanban_colorpicker" data-field="color"/>
+                                </div>
+                            </div>
+
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_title ">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            N°:
+                                            <strong>
+                                                <field name="number"/>
+                                            </strong>
+                                        </div>
+                                        <div class="col-6">
+                                            Revision:
+                                            <span class="float-right">
+                                                <field name="revision"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="we_cotation_list_view" model="ir.ui.view">
+        <field name="name">cwe.otation.list.view</field>
         <field name="model">we.cotation</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="number"/>
                 <field name="revision"/>
-                <field name="state"/>
+                <!-- <field name="state"/> -->
             </tree>
         </field>
     </record>
-    <record id="cotation_form_view" model="ir.ui.view">
-        <field name="name">cotation.form.view</field>
+    <record id="we_cotation_form_view" model="ir.ui.view">
+        <field name="name">we.cotation.form.view</field>
         <field name="model">we.cotation</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '1'}" />
+                </header>
                 <sheet>
                     <group>
                         <group string="General">
                             <field name="number"/>
                             <field name="revision"/>
-                            <field name="by_piece" /> 
+                            <field name="by_piece" />
+                            <field name="deviser_id" />
+                            
                         </group>
                         <group>
                             <field name="workcenters" />
@@ -31,13 +95,22 @@
                     <field name="products" />
 
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
             </form>
         </field>
     </record>
-    <record id="cotation_action" model="ir.actions.act_window">
+
+
+
+    <record id="we_cotation_action" model="ir.actions.act_window">
         <field name="name">Cotation</field>
         <field name="res_model">we.cotation</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,tree,form</field>
     </record>
-    <!-- <menuitem id="menu_mrp_plm_config_stage" action="mrp_plm_config_stage_action" parent="menu_mrp_plm_configuration" name="Stage" sequence="2"/> -->
+    <menuitem id="we_cotation_menu" name="Quotations" action="we_cotation_action" parent="we_cotation_base_menu" sequence="1"/>
+
 </odoo>

@@ -18,20 +18,26 @@
     'category': 'Productivity',
     'version': '1.0',
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base','uom', 'mail'],
 
     # always loaded
     'data': [
-        'security/plm_security.xml',
+        'security/quotation_security.xml',
         'security/ir.model.access.csv',
+        'views/menu_views.xml',
         'views/stage_views.xml',
         'views/cotation_views.xml',
         'views/workcenter_views.xml',
-        'views/menu_views.xml'
+        'views/bom_views.xml',
+        'views/product_views.xml',
+        'views/product_template_views.xml',
+        
         # 'data/ir_cron.xml',
-        # 'data/ir_module_category.xml',
-        # 'data/mrp_plm_data.xml',
-        # 'views/user.xml',
+
+        # 'data/workcenters.xml',
+        # 'data/stages.xml',
+        # 'data/product_template.xml',
+        
 
     ],
     'qweb': ['static/src/xml/*.xml'],
