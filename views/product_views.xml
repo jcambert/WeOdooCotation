@@ -1,5 +1,26 @@
 <?xml version="1.0"?>
 <odoo>
+    <record id="we_quotation_list_view_action" model="ir.actions.act_window">
+        <field name="context">{'default_name': active_name}</field>
+        <field name="name">Product quotations</field>
+        <field name="res_model">we.cotation.product</field>
+    </record>
+
+    <record id="we_cotation_product_form_view_inherited" model="ir.ui.view">
+        <field name="name">we.cotation.product.form.view.inherited</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <header position="inside">
+                <button string="Create A Quotation" type="object" name="action_create_quotation" attrs="{'invisible': ['|',('type', '!=', 'product'),('sale_ok','!=',True)]}"/>
+            </header>
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button" name="%(we_quotation_list_view_action)d" type="action" icon="fa-flask">
+                    <field string="Quotations" name="quotation_count" widget="statinfo" />
+                </button>
+            </div>
+        </field>
+    </record>
     <record id="we_cotation_product_list_view" model="ir.ui.view">
         <field name="name">we.cotation.product.list.view</field>
         <field name="model">we.cotation.product</field>
@@ -97,7 +118,7 @@
         <field name="inherit_id" ref="we_cotation_product_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside">
-                <button class="oe_stat_button" name="%(template_open_bom)d"  type="action" icon="fa-flask">
+                <button class="oe_stat_button" name="%(template_open_bom)d" type="action" icon="fa-flask">
                     <field string="Bill of Materials" name="bom_count" widget="statinfo" />
                 </button>
             </xpath>

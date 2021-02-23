@@ -18,7 +18,7 @@
     'category': 'Productivity',
     'version': '1.0',
     # any module necessary for this one to work correctly
-    'depends': ['base','uom', 'mail'],
+    'depends': ['base','product','uom', 'mail'],
 
     # always loaded
     'data': [

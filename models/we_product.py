@@ -2,6 +2,25 @@
 
 from odoo import models, fields,tools, api,_
 from odoo.exceptions import AccessError, UserError,ValidationError
+
+class Product(models.Model):
+    _inherit = ['product.template']
+    _description = 'Product Quotation Extensions'
+
+    quotation_count = fields.Integer('Quotation',compute='_compute_quotation_count')
+
+    @api.depends('name')
+    def _compute_quotation_count(self):
+        for record in self.filtered(lambda r:r.sale_ok):
+            record.quotation_count= self.env['we.cotation.product'].search_count([('name','=',record.name)])
+        for record in self.filtered(lambda r:not r.sale_ok):
+            record.quotation_count=0
+    def action_create_quotation(self):
+        pass
+    def action_view_quotations(self):
+        pass
+
+
 class WeProduct(models.Model):
     """ Model for cotation processing
     """
