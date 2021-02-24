@@ -34,9 +34,9 @@
         
         # 'data/ir_cron.xml',
 
-        # 'data/workcenters.xml',
-        # 'data/stages.xml',
-        # 'data/product_template.xml',
+        'data/workcenters.xml',
+        'data/stages.xml',
+        'data/product_template.xml',
         
 
     ],
