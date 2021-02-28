@@ -1,10 +1,3 @@
 id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
-cotation_user_type,cotation_user,model_we_cotation,group_cotation_user,1,1,1,1=
-cotation_user_product,cotation_user,model_we_cotation_product,group_cotation_user,1,1,1,1
-cotation_user_product_template,cotation_user,model_we_cotation_product_template,group_cotation_user,1,1,1,1
+cotation_user,cotation_user,model_we_cotation,group_cotation_user,1,1,1,1
 cotation_user_stage,cotation_user,model_we_cotation_stage,group_cotation_user,1,1,1,1
-cotation_user_workcenter,cotation_user,model_we_cotation_workcenter,group_cotation_user,1,1,1,1
-cotation_user_workcenter_template,cotation_user,model_we_cotation_workcenter_template,group_cotation_user,1,1,1,1
-cotation_user_material,cotation_user,model_we_cotation_material,group_cotation_user,1,1,1,1
-cotation_user_bom,cotation_user,model_we_cotation_bom,group_cotation_user,1,1,1,1
-cotation_user_bom_lines,cotation_user,model_we_cotation_bom_line,group_cotation_user,1,1,1,1

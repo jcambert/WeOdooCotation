@@ -47,7 +47,7 @@
                                             </span>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
 
                             </div>
@@ -59,17 +59,17 @@
         </field>
     </record>
 
-    <record id="we_cotation_list_view" model="ir.ui.view">
-        <field name="name">cwe.otation.list.view</field>
+    <!-- <record id="we_cotation_list_view" model="ir.ui.view">
+        <field name="name">we.cotation.list.view</field>
         <field name="model">we.cotation</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="number"/>
                 <field name="revision"/>
-                <!-- <field name="state"/> -->
             </tree>
         </field>
-    </record>
+    </record> -->
+
     <record id="we_cotation_form_view" model="ir.ui.view">
         <field name="name">we.cotation.form.view</field>
         <field name="model">we.cotation</field>
@@ -79,20 +79,31 @@
                     <field name="stage_id" widget="statusbar" options="{'clickable': '1'}" />
                 </header>
                 <sheet>
-                    <group>
-                        <group string="General">
-                            <field name="number"/>
-                            <field name="revision"/>
-                            <field name="by_piece" />
-                            <field name="deviser_id" />
+                    <div class="oe_title">
+                        <label class="oe_edit_only" for="number" string="Number"/>
+                        <h1>
+                            <field name="number" placeholder="Number"/>
+                        </h1>
+                        <div name="options" >
+                            <div>
+                                <field name="revision"/>
+                                <label for="revision"/>
+                            </div>
+                            <div>
+                                <field name="deviser_id"/>
+                                <label for="deviser_id"/>
+                            </div>
+                        </div>
+                    </div>
+                    <notebook>
+                        <page name="general_information" string="General Information">
                             
-                        </group>
-                        <group>
-                            <field name="workcenters" />
-                        </group>
-                    </group>
-                    <label for="products"/>
-                    <field name="products" />
+                        </page>
+                        <page name="boms" string="Boms">
+                            <field name="bom_ids" widget="one2many" />
+                        </page>
+                    </notebook>
+                    
 
                 </sheet>
                 <div class="oe_chatter">

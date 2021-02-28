@@ -1,11 +1,16 @@
 <?xml version="1.0"?>
 <odoo>
-    <record id="we_quotation_list_view_action" model="ir.actions.act_window">
-        <field name="context">{'default_name': active_name}</field>
-        <field name="name">Product quotations</field>
-        <field name="res_model">we.cotation.product</field>
-    </record>
 
+    <record id="template_open_quotation_bom" model="ir.actions.act_window">
+        <field name="context">{'default_product_tmpl_id': active_id,'search_default_product_tmpl_id': active_id,'search_default_quot':True}</field>
+        <field name="name">Quotations</field>
+        <field name="res_model">mrp.bom</field>
+    </record>
+    <record id="template_open_bom" model="ir.actions.act_window">
+        <field name="context">{'default_product_tmpl_id': active_id,'search_default_product_tmpl_id': active_id,'search_default_notquot':True}</field>
+        <field name="name">Bills of materials</field>
+        <field name="res_model">mrp.bom</field>
+    </record>
     <record id="we_cotation_product_form_view_inherited" model="ir.ui.view">
         <field name="name">we.cotation.product.form.view.inherited</field>
         <field name="model">product.template</field>
@@ -14,14 +19,26 @@
             <header position="inside">
                 <button string="Create A Quotation" type="object" name="action_create_quotation" attrs="{'invisible': ['|',('type', '!=', 'product'),('sale_ok','!=',True)]}"/>
             </header>
-            <div name="button_box" position="inside">
-                <button class="oe_stat_button" name="%(we_quotation_list_view_action)d" type="action" icon="fa-flask">
-                    <field string="Quotations" name="quotation_count" widget="statinfo" />
-                </button>
-            </div>
+            <!-- <div name="button_box" position="inside">
+            </div> -->
         </field>
     </record>
-    <record id="we_cotation_product_list_view" model="ir.ui.view">
+    <record id="we_cotation_product_form_view_bom_button_inherited" model="ir.ui.view">
+        <field name="name">we.cotation.product.form.view.bom.button.inherited</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="mrp.product_template_form_view_bom_button"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_open_product_lot']/following-sibling::button[1]" position="replace">
+                <button class="oe_stat_button" name="%(template_open_quotation_bom)d" type="action" attrs="{'invisible':[('type', 'not in', ['product', 'consu'])]}" icon="fa-flask">
+                    <field string="Quotations" name="quot_count" widget="statinfo" />
+                </button>
+                <button class="oe_stat_button" name="%(template_open_bom)d" type="action" attrs="{'invisible':[('type', 'not in', ['product', 'consu'])]}" icon="fa-flask">
+                    <field string="Bill of Materials" name="bom_count" widget="statinfo" />
+                </button>
+            </xpath>
+        </field>
+    </record>
+    <!-- <record id="we_cotation_product_list_view" model="ir.ui.view">
         <field name="name">we.cotation.product.list.view</field>
         <field name="model">we.cotation.product</field>
         <field name="arch" type="xml">
@@ -33,11 +50,11 @@
                 <field name="component_cost" />
                 <field name="preparation_cost" />
                 <field name="mo_cost" />
-                <!-- <field name="hardness" widget="badge"/> -->
+                <field name="hardness" widget="badge"/>
             </tree>
         </field>
-    </record>
-    <record id="we_cotation_product_form_view" model="ir.ui.view">
+    </record> -->
+    <!-- <record id="we_cotation_product_form_view" model="ir.ui.view">
         <field name="name">we.cotation.product.form.view</field>
         <field name="model">we.cotation.product</field>
         <field name="arch" type="xml">
@@ -91,14 +108,7 @@
                             </group>
 
                         </page>
-                        <!-- <page name="components" string="Components">
-                            <label for="components"></label>
-                            <field name="components" widget="many2many"/>
-                        </page>
-                        <page name="operations" string="Operations">
-                            <label for="operations"></label>
-                            <field name="operations" widget="many2one" />
-                        </page> -->
+                       
                     </notebook>
 
                 </sheet>
@@ -109,9 +119,9 @@
                 </div>
             </form>
         </field>
-    </record>
+    </record> -->
 
-    <record id="we_cotation_product_form_view_bom_button" model="ir.ui.view">
+    <!-- <record id="we_cotation_product_form_view_bom_button" model="ir.ui.view">
         <field name="name">we.cotation.product.form.view.procurement</field>
         <field name="model">we.cotation.product</field>
         <field name="groups_id" eval="[(4, ref('WeOdooCotation.group_cotation_user'))]"/>
@@ -123,10 +133,10 @@
                 </button>
             </xpath>
         </field>
-    </record>
+    </record> -->
 
 
-    <record id="we_cotation_product_action" model="ir.actions.act_window">
+    <!-- <record id="we_cotation_product_action" model="ir.actions.act_window">
         <field name="name">Products</field>
         <field name="res_model">we.cotation.product</field>
         <field name="view_mode">kanban,tree,form</field>
@@ -140,5 +150,5 @@
             </p>
         </field>
     </record>
-    <menuitem id="we_cotation_product_menu" action="we_cotation_product_action" parent="we_cotation_base_menu" name="Products" sequence="2"/>
+    <menuitem id="we_cotation_product_menu" action="we_cotation_product_action" parent="we_cotation_base_menu" name="Products" sequence="2"/> -->
 </odoo>

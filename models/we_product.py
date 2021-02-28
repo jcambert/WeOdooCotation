@@ -11,9 +11,10 @@ class Product(models.Model):
 
     @api.depends('name')
     def _compute_quotation_count(self):
-        for record in self.filtered(lambda r:r.sale_ok):
+        sales=self.filtered(lambda r:r.sale_ok)
+        for record in sales:
             record.quotation_count= self.env['we.cotation.product'].search_count([('name','=',record.name)])
-        for record in self.filtered(lambda r:not r.sale_ok):
+        for record in (self - sales):
             record.quotation_count=0
     def action_create_quotation(self):
         pass

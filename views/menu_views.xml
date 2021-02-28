@@ -6,5 +6,11 @@
     
     <menuitem id="we_cotation_configuration_menu" parent="we_cotation_root_menu" name="Configuration" sequence="100" groups="WeOdooCotation.group_cotation_user"/>
 
-    
+    <menuitem
+        id="we_product_menu"
+        name="Product"
+        action="mrp.product_template_action"
+        groups="WeOdooCotation.group_cotation_user"
+        parent="we_cotation_base_menu"
+        sequence="10"/>
 </odoo>

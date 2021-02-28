@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="mrp_workcenter_view_form_inherit" model="ir.ui.view">
+        <field name="name">mrp.workcenter.view.form.inherit</field>
+        <field name="model">mrp.workcenter</field>
+        <field name="inherit_id" ref="mrp.mrp_workcenter_view"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+
+                <page name="quotation" string="Quotation">
+                    <group>
+                        <group name="quotation_general" string="Cost">
+                            <field name="quot_cost" />
+                            <field name="quot_cost_prep" />
+                            <field name="quot_margin" />
+                        </group>
+                        <group name="quotation_time">
+                            <field name="quot_default_time_prep" />
+                            <field name="quot_base_time" />
+                        </group>
+                        <group name="quotation_help" string="Help">
+                            <field name="quot_help" />
+                        </group>
+                    </group>
+                </page>
+            </notebook>
+
+            <xpath expr="//group[@name='costing']/following-sibling::group[1]" position="inside">
+                <label for="time_cycle_prep"/>
+                <div>
+                    <field name="time_cycle_prep" widget="float_time" class="oe_inline"/>minutes
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

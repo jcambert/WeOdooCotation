@@ -18,7 +18,7 @@
     'category': 'Productivity',
     'version': '1.0',
     # any module necessary for this one to work correctly
-    'depends': ['base','product','uom', 'mail'],
+    'depends': ['base','product','mrp','uom', 'mail'],
 
     # always loaded
     'data': [
@@ -27,16 +27,19 @@
         'views/menu_views.xml',
         'views/stage_views.xml',
         'views/cotation_views.xml',
-        'views/workcenter_views.xml',
-        'views/bom_views.xml',
+        'views/mrp_workcenter_views.xml',
+        'views/mrp_routing_views.xml',
+        'views/mrp_bom_views.xml',
+        'views/res_config_settings_view.xml',
+        # 'views/bom_views.xml',
         'views/product_views.xml',
-        'views/product_template_views.xml',
+        # 'views/product_template_views.xml',
         
         # 'data/ir_cron.xml',
 
-        'data/workcenters.xml',
-        'data/stages.xml',
-        'data/product_template.xml',
+        # 'data/workcenters.xml',
+        # 'data/stages.xml',
+        # 'data/product_template.xml',
         
 
     ],
