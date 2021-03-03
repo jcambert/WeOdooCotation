@@ -19,6 +19,43 @@
             <header position="inside">
                 <button string="Create A Quotation" type="object" name="action_create_quotation" attrs="{'invisible': ['|',('type', '!=', 'product'),('sale_ok','!=',True)]}"/>
             </header>
+            <xpath expr="//field[@name='name']/.." position="after">
+                <group>
+                    <group>
+                        <field name="libelle" />
+                    </group>
+                </group>
+            </xpath>
+            <xpath expr="//group[@name='group_standard_price']" position="replace">
+                <group name="group_standard_price">
+                    <label for="list_price" attrs="{'invisible': [('sale_ok', '=', False)]}"/>
+                    <div name="pricing" attrs="{'invisible': [('sale_ok', '=', False)]}">
+                        <field name="list_price" class="oe_inline" widget='monetary' options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                        <button name="open_pricelist_rules" icon="fa-arrow-right" type="object" groups="product.group_product_pricelist" class="oe_inline">
+                            <field name="pricelist_item_count" attrs="{'invisible': [('pricelist_item_count', '=', 0)]}"/>
+                            <span attrs="{'invisible': [('pricelist_item_count', '=', 1)]}">
+                                          Extra Prices
+                            </span>
+                            <span attrs="{'invisible': [('pricelist_item_count', '!=', 1)]}">
+                                          Extra Price
+                            </span>
+                        </button>
+                    </div>
+                    <label for="standard_price" groups="base.group_user" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False),'|',('sale_ok','=',False)]}"/>
+                    <div name="standard_price_uom" groups="base.group_user" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False),'|',('sale_ok','=',False)]}" class="o_row">
+                        <field name="standard_price" widget='monetary' options="{'currency_field': 'cost_currency_id', 'field_digits': True}"/>
+                        <span groups="uom.group_uom" class="oe_read_only">per
+                            <field name="uom_name"/>
+                        </span>
+                    </div>
+                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                    <field name="uom_id" groups="uom.group_uom" options="{'no_create': True}"/>
+                    <field name="uom_po_id" groups="uom.group_uom" options="{'no_create': True}" attrs="{'invisible': [('purchase_ok', '=', False)]}"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="cost_currency_id" invisible="1"/>
+                    <field name="product_variant_id" invisible="1"/>
+                </group>
+            </xpath>
             <!-- <div name="button_box" position="inside">
             </div> -->
         </field>
@@ -29,10 +66,10 @@
         <field name="inherit_id" ref="mrp.product_template_form_view_bom_button"/>
         <field name="arch" type="xml">
             <xpath expr="//button[@name='action_open_product_lot']/following-sibling::button[1]" position="replace">
-                <button class="oe_stat_button" name="%(template_open_quotation_bom)d" type="action" attrs="{'invisible':[('type', 'not in', ['product', 'consu'])]}" icon="fa-flask">
+                <button class="oe_stat_button" name="%(template_open_quotation_bom)d" type="action" attrs="{'invisible':['|',('type', 'not in', ['product', 'consu']),('sale_ok','!=',True)]}" icon="fa-flask">
                     <field string="Quotations" name="quot_count" widget="statinfo" />
                 </button>
-                <button class="oe_stat_button" name="%(template_open_bom)d" type="action" attrs="{'invisible':[('type', 'not in', ['product', 'consu'])]}" icon="fa-flask">
+                <button class="oe_stat_button" name="%(template_open_bom)d" type="action" attrs="{'invisible':['|',('type', 'not in', ['product', 'consu']),('sale_ok','!=',True)]}" icon="fa-flask">
                     <field string="Bill of Materials" name="bom_count" widget="statinfo" />
                 </button>
             </xpath>

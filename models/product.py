@@ -1,10 +1,11 @@
 from odoo import models, fields,tools, api,_
 from odoo.exceptions import AccessError, UserError,ValidationError
 from .res_config_settings import PRODUCT_NAME_FORCE_UPPERCASE
-class Product(models.Model):
+class ProductTemplate(models.Model):
     _inherit = ['product.template']
     _description = 'Product Quotation Extensions'
 
+    libelle = fields.Char('Libelle')
     quot_count = fields.Integer('Quotation',compute='_compute_bom_count', compute_sudo=False)
    
     def _compute_quotation_count(self):
@@ -29,3 +30,5 @@ class Product(models.Model):
         pass
     def action_view_quotations(self):
         pass
+
+class Product(models.Mo)

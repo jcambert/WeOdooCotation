@@ -84,26 +84,30 @@
                         <h1>
                             <field name="number" placeholder="Number"/>
                         </h1>
-                        <div name="options" >
-                            <div>
-                                <field name="revision"/>
-                                <label for="revision"/>
-                            </div>
-                            <div>
-                                <field name="deviser_id"/>
-                                <label for="deviser_id"/>
-                            </div>
-                        </div>
+                        <group>
+                            <label for="revision"/>
+                            <field name="revision" nolabel="1"/>
+
+                            <label for="deviser_id"/>
+                            <field name="deviser_id" nolabel="1"/>
+                        </group>
                     </div>
                     <notebook>
                         <page name="general_information" string="General Information">
-                            
+
                         </page>
                         <page name="boms" string="Boms">
-                            <field name="bom_ids" widget="one2many" />
+                            <field name="bom_ids" widget="one2many">
+                                <tree string="Values" editable="bottom">
+                                    <field name="active" invisible="1"/>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_tmpl_id"/>
+                                    <field name="company_id" invisible="True"/>
+                                </tree>
+                            </field>
                         </page>
                     </notebook>
-                    
+
 
                 </sheet>
                 <div class="oe_chatter">

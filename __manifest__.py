@@ -33,6 +33,7 @@
         'views/res_config_settings_view.xml',
         # 'views/bom_views.xml',
         'views/product_views.xml',
+        'views/product_attribute_views.xml',
         # 'views/product_template_views.xml',
         
         # 'data/ir_cron.xml',
@@ -40,7 +41,9 @@
         # 'data/workcenters.xml',
         # 'data/stages.xml',
         # 'data/product_template.xml',
-        
+        'data/product_attribute.xml',
+        'data/product_categories.xml'
+
 
     ],
     'qweb': ['static/src/xml/*.xml'],

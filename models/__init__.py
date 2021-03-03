@@ -7,6 +7,7 @@
 # from . import we_bom
 
 from . import res_config_settings
+from . import product_attribute
 from . import product
 from . import mrp_workcenter
 from . import mrp_routing
