@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <!-- <data noupdate="1"> -->
+    <data>
         <record model="product.attribute" id="product_attribute_dimension_tole">
             <field name="name">Dimension Tole</field>
             <field name="display_type">dimension</field>
@@ -22,6 +23,102 @@
             <field name="name">Grand Format</field>
             <field name="length">3000</field>
             <field name="width">1500</field>
+        </record>
+
+        <record model="product.attribute" id="product_attribute_epaisseur_tole">
+            <field name="name">Epaisseur Tole</field>
+            <field name="display_type">thickness</field>
+        </record>
+        <record model="product.attribute.value" id="product_attribute_epaisseur_tole_10">
+            <field name="attribute_id" ref="product_attribute_epaisseur_tole"/>
+            <field name="name">10/10</field>
+            <field name="thickness">1</field>
+        </record>
+        <record model="product.attribute.value" id="product_attribute_epaisseur_tole_15">
+            <field name="attribute_id" ref="product_attribute_epaisseur_tole"/>
+            <field name="name">15/10</field>
+            <field name="thickness">1.5</field>
+        </record>
+        <record model="product.attribute.value" id="product_attribute_epaisseur_tole_20">
+            <field name="attribute_id" ref="product_attribute_epaisseur_tole"/>
+            <field name="name">20/10</field>
+            <field name="thickness">2.0</field>
+        </record>
+
+        <record model="product.attribute.value" id="product_attribute_epaisseur_tole_25">
+            <field name="attribute_id" ref="product_attribute_epaisseur_tole"/>
+            <field name="name">25/10</field>
+            <field name="thickness">2.5</field>
+        </record>
+        <record model="product.attribute.value" id="product_attribute_epaisseur_tole_30">
+            <field name="attribute_id" ref="product_attribute_epaisseur_tole"/>
+            <field name="name">30/10</field>
+            <field name="thickness">3.0</field>
+        </record>
+        <record model="product.attribute.value" id="product_attribute_epaisseur_tole_40">
+            <field name="attribute_id" ref="product_attribute_epaisseur_tole"/>
+            <field name="name">40/10</field>
+            <field name="thickness">4.0</field>
+        </record>
+        <record model="product.attribute.value" id="product_attribute_epaisseur_tole_50">
+            <field name="attribute_id" ref="product_attribute_epaisseur_tole"/>
+            <field name="name">50/10</field>
+            <field name="thickness">5.0</field>
+        </record>
+        <record model="product.attribute.value" id="product_attribute_epaisseur_tole_60">
+            <field name="attribute_id" ref="product_attribute_epaisseur_tole"/>
+            <field name="name">60/10</field>
+            <field name="thickness">6.0</field>
+        </record>
+        <record model="product.attribute.value" id="product_attribute_epaisseur_tole_80">
+            <field name="attribute_id" ref="product_attribute_epaisseur_tole"/>
+            <field name="name">80/10</field>
+            <field name="thickness">8.0</field>
+        </record>
+        <record model="product.attribute.value" id="product_attribute_epaisseur_tole_100">
+            <field name="attribute_id" ref="product_attribute_epaisseur_tole"/>
+            <field name="name">10</field>
+            <field name="thickness">10.0</field>
+        </record>
+        <record model="product.attribute.value" id="product_attribute_epaisseur_tole_120">
+            <field name="attribute_id" ref="product_attribute_epaisseur_tole"/>
+            <field name="name">12</field>
+            <field name="thickness">12.0</field>
+        </record>
+        <record model="product.attribute.value" id="product_attribute_epaisseur_tole_150">
+            <field name="attribute_id" ref="product_attribute_epaisseur_tole"/>
+            <field name="name">15</field>
+            <field name="thickness">15</field>
+        </record>
+        <record model="product.attribute.value" id="product_attribute_epaisseur_tole_160">
+            <field name="attribute_id" ref="product_attribute_epaisseur_tole"/>
+            <field name="name">16</field>
+            <field name="thickness">16</field>
+        </record>
+
+        <record model="product.attribute" id="product_attribute_material">
+            <field name="name">Matiere</field>
+            <field name="display_type">material</field>
+        </record>
+        <record model="product.attribute.value" id="product_attribute_material_steel">
+            <field name="attribute_id" ref="product_attribute_material"/>
+            <field name="name">Acier</field>
+            <field name="volmass">7.8</field>
+        </record>
+        <record model="product.attribute.value" id="product_attribute_material_stainlesssteel">
+            <field name="attribute_id" ref="product_attribute_material"/>
+            <field name="name">Inox</field>
+            <field name="volmass">7.8</field>
+        </record>
+        <record model="product.attribute.value" id="product_attribute_material_aluminium">
+            <field name="attribute_id" ref="product_attribute_material"/>
+            <field name="name">Aluminium</field>
+            <field name="volmass">2.7</field>
+        </record>
+        <record model="product.attribute.value" id="product_attribute_material_coper">
+            <field name="attribute_id" ref="product_attribute_material"/>
+            <field name="name">Cuivre</field>
+            <field name="volmass">9</field>
         </record>
     </data>
 </odoo>
