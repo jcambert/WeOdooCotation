@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="we_cotatation_category_form_view" model="ir.ui.view">
+        <field name="name">we.cotatation.category.form.view</field>
+        <field name="model">we.cotation.category</field>
+        <field name="arch" type="xml">
+            <form string="Quotation Category">
+                <sheet>
+                    <group>
+                        <group string="General">
+                            <field name="name" />
+                            <field name="category" />
+                            <field name="margin" />
+                        </group>
+
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="we_cotation_category_tree_view" model="ir.ui.view">
+        <field name="name">we.cotation.category.tree.view</field>
+        <field name="model">we.cotation.category</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="category" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="we_cotation_category_action" model="ir.actions.act_window">
+        <field name="name">Category</field>
+        <field name="res_model">we.cotation.category</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="we_cotation_category_menu" action="we_cotation_category_action" parent="we_cotation_configuration_menu" name="Categories" sequence="2"/>
+
+</odoo>

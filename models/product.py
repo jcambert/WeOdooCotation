@@ -1,11 +1,16 @@
 from odoo import models, fields, api,_
 from odoo.exceptions import AccessError, UserError,ValidationError
-from ast import literal_eval
+from ast import literal_eval as _literal_eval
+from .models import Model
 import logging
 import re
 import math
 _logger = logging.getLogger(__name__)
-from .res_config_settings import PRODUCT_NAME_FORCE_UPPERCASE
+from .res_config_settings import PRODUCT_NAME_FORCE_UPPERCASE,DIMENSION_ATTRIBUTE,THICKNESS_ATTRIBUTE,MATERIAL_ATTRIBUTE,SHEETMETAL_CATEGORY
+def literal_eval(arg):
+    if isinstance(arg,bool):
+        return arg
+    return _literal_eval(arg)
 def _filterByRe(*args):
     if len(args) not in [2,3]:
         return False
@@ -30,13 +35,16 @@ def _compile(code,backfn,errorfn):
     except:
         errorfn()
 
-class ProductTemplate(models.Model):
+class ProductTemplate(Model):
     _inherit = ['product.template']
     _description = 'Product Quotation Extensions'
 
     libelle = fields.Char('Libelle')
     quot_count = fields.Integer('Quotation',compute='_compute_bom_count', compute_sudo=False)
-   
+    material = fields.Many2one('we.material','Material')
+    is_sheetmetal=fields.Boolean()
+    is_beam=fields.Boolean()
+    is_predefined_beam=fields.Boolean('Is predefined beam')
     def _compute_quotation_count(self):
         for record in self:
             record.quot_count=self.env['mrp.bom'].search_count(['name','=',record.name])
@@ -44,7 +52,7 @@ class ProductTemplate(models.Model):
     @api.onchange('name')
     def set_upper(self):    
         if isinstance(self.name,str):
-            force=self.env['ir.config_parameter'].get_param(PRODUCT_NAME_FORCE_UPPERCASE)
+            force=self.get_param(PRODUCT_NAME_FORCE_UPPERCASE)
             self.name = str(self.name).upper() if force else str(self.name)
         return
 
@@ -60,12 +68,10 @@ class ProductTemplate(models.Model):
     def action_view_quotations(self):
         pass
 
-class Product(models.Model):
+class Product(Model):
     _inherit = "product.product"
+    _models={'attribute':'product.attribute','material':'we.material'}
     
-    is_sheetmetal=fields.Boolean()
-    is_beam=fields.Boolean()
-    is_predefined_beam=fields.Boolean('Is predefined beam')
     beam_length = fields.Integer('Beam length')
     surface_section = fields.Float('Surface Section', digits='Product Unit of Measure', default=0.0)
     surface_meter = fields.Float('Surface per meter', digits='Product Unit of Measure', default=0.0)
@@ -76,22 +82,61 @@ class Product(models.Model):
     dim4=fields.Float('dim4',digits='Product Unit of Measure',default=0.0)#Width, internal diameter
     dim5=fields.Float('dim5',digits='Product Unit of Measure',default=0.0)#thickness
 
+    volmass=fields.Float('Volumic mass',default=0.0,related='material.volmass')
     auto_surface=fields.Float('Auto calculated surface',store=True,compute='_compute_material_values', digits='Product Unit of Measure',default=0.0)
     auto_weight=fields.Float('Auto calculated weight',store=True,compute='_compute_material_values',default=0.0)
 
     @api.onchange('name')
     def set_upper(self):    
         if isinstance(self.name,str):
-            force=self.env['ir.config_parameter'].get_param(PRODUCT_NAME_FORCE_UPPERCASE)
+            force=self.get_param(PRODUCT_NAME_FORCE_UPPERCASE)
             self.name = str(self.name).upper() if force else str(self.name)
         return
     
     @api.depends('product_template_attribute_value_ids')
     def _compute_material_values(self):
+        dim_id= self.get_param(DIMENSION_ATTRIBUTE)
+        thickness_id= self.get_param(THICKNESS_ATTRIBUTE)
+        material_id=self.get_param(MATERIAL_ATTRIBUTE)
+        sheetmetal_id = self.get_param(SHEETMETAL_CATEGORY)
+        # dim_attr=  self.env['product.attribute'].browse(dim_id) 
+        dim_attr=self.attribute.browse(dim_id)
+        thickness_attr=  self.env['product.attribute'].browse(thickness_id) 
+        material_attr=self.env['product.attribute'].browse(material_id) 
         for record in self:
+            record.is_sheetmetal =self.categ_id.id ==  sheetmetal_id
+            if dim_attr:
+                _dim_attr = record.product_template_attribute_value_ids.filtered(lambda r:r.attribute_id.id==dim_attr.id)
+                if _dim_attr:
+                    record.dim1=_dim_attr.product_attribute_value_id.length
+                    record.dim2=_dim_attr.product_attribute_value_id.width
+            if thickness_attr:
+                _thickness_attr = record.product_template_attribute_value_ids.filtered(lambda r:r.attribute_id.id==thickness_attr.id)
+                if _thickness_attr:
+                    record.dim5=_thickness_attr.product_attribute_value_id.thickness
+            if material_attr:
+                _material_attr = record.product_template_attribute_value_ids.filtered(lambda r:r.attribute_id.id==material_attr.id)
+                if _material_attr:
+                #     material=self.material.search([('name','=',_material_attr.product_attribute_value_id.name)],limit=1)
+                #     if material:
+                #         record.material=material
+                #     else:
+                    record.material=_material_attr.product_attribute_value_id.material.id
+
             record.auto_surface=0.0
             record.auto_weight=0.0
+            record.calculate_weight()
+            # record.weight=(record.dim1*record.dim2*record.dim5*volmass)/1000000
 
+    @api.model
+    def calculate_weight(self):
+        self.ensure_one()
+        self.weight=(self.dim1*self.dim2*self.dim5*self.volmass)/1000000
+    
+    @api.onchange('dim1','dim2','dim5','volmass')
+    def _on_dim1_change(self):
+        for record in self:
+            record.calculate_weight()
     @api.model
     def compute_is_beam(self,beams,beam_ids,sheetmetal_id,beam_types,materials,clear_cat=False,clear_name=False):
         self.ensure_one()

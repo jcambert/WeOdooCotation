@@ -10,7 +10,7 @@
                 <field name="length" string="Width" attrs="{'column_invisible': [('parent.display_type', '!=', 'dimension')]}" />
                 <field name="width" string="Length" attrs="{'column_invisible': [('parent.display_type', '!=', 'dimension')]}" />
                 <field name="thickness" string="Thickness" attrs="{'column_invisible': [('parent.display_type', '!=', 'thickness')]}" />
-                <field name="volmass" string="Volumic mass" attrs="{'column_invisible': [('parent.display_type', '!=', 'material')]}" />
+                <field name="material" string="Material" attrs="{'column_invisible': [('parent.display_type', '!=', 'material')]}" />
             </xpath>
         </field>
     </record>

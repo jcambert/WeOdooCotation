@@ -75,6 +75,29 @@
             </xpath>
         </field>
     </record>
+    <record id="we_product_variant_easy_edit_view_inherited" model="ir.ui.view">
+        <field name="name">we.product.variant.easy.edit.view.inherited</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='weight']" position="inside">
+                <field name="is_sheetmetal" invisible="1" />
+                <label for="dim1" string="Length" attrs="{'invisible': [('is_sheetmetal', '=', False)]}"/>
+                <div class="o_row" attrs="{'invisible': [('is_sheetmetal', '=', False)]}">
+                    <field name="dim1" readonly="1"/>
+                </div>
+                <label for="dim2" string="Width" attrs="{'invisible': [('is_sheetmetal', '=', False)]}"/>
+                <div class="o_row" attrs="{'invisible': [('is_sheetmetal', '=', False)]}">
+                    <field name="dim2" readonly="1"/>
+                </div>
+                <label for="dim5" string="Thickness" attrs="{'invisible': [('is_sheetmetal', '=', False)]}"/>
+                <div class="o_row" attrs="{'invisible': [('is_sheetmetal', '=', False)]}">
+                    <field name="dim5" readonly="1"/>
+                </div>
+            </xpath>
+        </field>
+
+    </record>
     <!-- <record id="we_cotation_product_list_view" model="ir.ui.view">
         <field name="name">we.cotation.product.list.view</field>
         <field name="model">we.cotation.product</field>

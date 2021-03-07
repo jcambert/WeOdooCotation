@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <odoo>
+    
     <record id="we_cotation_product_template_list_view" model="ir.ui.view">
         <field name="name">we.cotation.product.template.list.view</field>
         <field name="model">we.cotation.product.template</field>

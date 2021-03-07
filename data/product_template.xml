@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data >
+    <data noupdate="1">
         <!-- <record forcecreate="True" model="we.cotation.product.template" id="product_template_">
             <field name="name"></field>
             <field name="cost_administrative"></field>

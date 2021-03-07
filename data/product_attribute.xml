@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- <data noupdate="1"> -->
-    <data>
+    <data noupdate="1">
+    <!-- <data> -->
         <record model="product.attribute" id="product_attribute_dimension_tole">
             <field name="name">Dimension Tole</field>
             <field name="display_type">dimension</field>
@@ -103,21 +103,40 @@
         <record model="product.attribute.value" id="product_attribute_material_steel">
             <field name="attribute_id" ref="product_attribute_material"/>
             <field name="name">Acier</field>
-            <field name="volmass">7.8</field>
         </record>
         <record model="product.attribute.value" id="product_attribute_material_stainlesssteel">
             <field name="attribute_id" ref="product_attribute_material"/>
             <field name="name">Inox</field>
-            <field name="volmass">7.8</field>
         </record>
         <record model="product.attribute.value" id="product_attribute_material_aluminium">
             <field name="attribute_id" ref="product_attribute_material"/>
             <field name="name">Aluminium</field>
-            <field name="volmass">2.7</field>
         </record>
         <record model="product.attribute.value" id="product_attribute_material_coper">
             <field name="attribute_id" ref="product_attribute_material"/>
             <field name="name">Cuivre</field>
+        </record>
+
+        <record forcecreate="True" model="res.config.settings" id="product_attribute">
+            <field name="material_attribute" ref="product_attribute_material"/>
+            <field name="thickness_attribute" ref="product_attribute_epaisseur_tole"/>
+            <field name="dimension_attribute" ref="product_attribute_dimension_tole"/>
+        </record>
+
+        <record  model="we.material" id="we_material_steel">
+            <field name="name">Acier</field>
+            <field name="volmass">7.8</field>
+        </record>
+        <record  model="we.material" id="we_material_stainlesssteel">
+            <field name="name">Inox</field>
+            <field name="volmass">7.8</field>
+        </record>
+        <record  model="we.material" id="we_material_aluminium">
+            <field name="name">Aluminium</field>
+            <field name="volmass">2.7</field>
+        </record>
+        <record  model="we.material" id="we_material_coper">
+            <field name="name">Coper</field>
             <field name="volmass">9</field>
         </record>
     </data>

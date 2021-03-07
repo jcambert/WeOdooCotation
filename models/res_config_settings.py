@@ -3,12 +3,16 @@ import sys
 from ast import literal_eval
 
 SETTINGS='weSettings'
+SHEETMETAL_CATEGORY='sheetmetal_category'
 PRODUCT_NAME_FORCE_UPPERCASE='product_name_force_uppercase'
+MATERIAL_ATTRIBUTE='material_attribute'
+THICKNESS_ATTRIBUTE='thickness_attribute'
+DIMENSION_ATTRIBUTE='dimension_attribute'
 class WeSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
     
-    sheetmetal_category=fields.Many2one('product.category',default=False,config_parameter='sheetmetal_category', string='Sheetmetal category')
+    sheetmetal_category=fields.Many2one('product.category',default=False,config_parameter=SHEETMETAL_CATEGORY, string='Sheetmetal category')
     # profile_categories=fields.Many2many('product.category',string='Profiles categories')
     component_category=fields.Many2one('product.category',default=False,config_parameter='component_category',string='Product category')
     # material_convention_names=fields.Many2many('we.setting.tag', 'we_setting_material_tag_rel', 'setting_id', 'material_tag_id', string='Material convention name')
@@ -17,8 +21,11 @@ class WeSettings(models.TransientModel):
     
     # clear_product_on_category_change = fields.Boolean('Clear on category change', help='Clear product material on category change',default=False)
     # clear_product_on_name_change = fields.Boolean('Clear on name Change', help='Clear product material on name change',default=False)
-    product_name_force_uppercase = fields.Boolean('Force name uppercase',default=False,config_parameter='product_name_force_uppercase', help='Clear product material on name change')
+    product_name_force_uppercase = fields.Boolean('Force name uppercase',default=False,config_parameter=PRODUCT_NAME_FORCE_UPPERCASE, help='Clear product material on name change')
   
+    material_attribute = fields.Many2one('product.attribute',default=False,config_parameter=MATERIAL_ATTRIBUTE,string='Material attribute')
+    thickness_attribute = fields.Many2one('product.attribute',default=False,config_parameter=THICKNESS_ATTRIBUTE,string='Thickness attribute')
+    dimension_attribute = fields.Many2one('product.attribute',default=False,config_parameter=DIMENSION_ATTRIBUTE,string='Dimension attribute')
     # indice_for_purchased = fields.Boolean('Indice for purchased product', help='Indice for purchased product',default=False)
 
     # def get_param(self,key):

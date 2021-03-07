@@ -18,15 +18,13 @@
     'category': 'Productivity',
     'version': '1.0',
     # any module necessary for this one to work correctly
-    'depends': ['base','product','mrp','uom', 'mail'],
+    'depends': ['base','product','mrp','sale','uom', 'mail'],
 
     # always loaded
     'data': [
         'security/quotation_security.xml',
         'security/ir.model.access.csv',
         'views/menu_views.xml',
-        'views/stage_views.xml',
-        'views/cotation_views.xml',
         'views/mrp_workcenter_views.xml',
         'views/mrp_routing_views.xml',
         'views/mrp_bom_views.xml',
@@ -34,6 +32,9 @@
         # 'views/bom_views.xml',
         'views/product_views.xml',
         'views/product_attribute_views.xml',
+        'views/we_stage_views.xml',
+        'views/we_cotation_category_views.xml',
+        'views/we_cotation_views.xml',
         # 'views/product_template_views.xml',
         
         # 'data/ir_cron.xml',

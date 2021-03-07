@@ -17,5 +17,6 @@ class ProductAttributeValue(models.Model):
     """ 3 Dimensionnal abilities """
     length = fields.Float('Length',default=0.0)
     width = fields.Float('Width',default=0.0)
-    volmass = fields.Float('Volumic mass',default=0.0)
     thickness = fields.Float('Thickness',default=0.0)
+    material = fields.Many2one('we.material','Material')
+    volmass = fields.Float('Volumic mass',related='material.volmass')

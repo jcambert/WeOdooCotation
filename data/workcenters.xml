@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data >
+    <data noupdate="1">
         <!-- <record forcecreate="True" model="we.cotation.workcenter.template" id="wkc_tpl_">
             <field name="name"></field>
             <field name="base_time"></field>

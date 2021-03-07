@@ -1,0 +1,211 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="we_cotation_order_kanban_view" model="ir.ui.view">
+        <field name="name">we.cotation.order.kanban.view</field>
+        <field name="model">we.cotation.order</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" class="oe_background_grey o_kanban_dashboard o_project_kanban o_emphasize_colors" quick_create="false" sample="1">
+
+                <field name="number"/>
+                <field name="revision"/>
+                <field name="stage_id"/>
+                <field name="color"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="o_dropdown_kanban dropdown" groups="base.group_user">
+                                <a role="button" class="dropdown-toggle o-no-caret btn" data-toggle="dropdown" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                    <span class="fa fa-ellipsis-v"/>
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <t t-if="widget.editable">
+                                        <a type="set_cover" class="dropdown-item" role="menuitem">Set Cover Image</a>
+                                    </t>
+                                    <t t-if="widget.editable">
+                                        <a type="edit" class="dropdown-item" role="menuitem">Edit Task</a>
+                                    </t>
+                                    <t t-if="widget.deletable">
+                                        <a type="delete" class="dropdown-item" role="menuitem">Delete</a>
+                                    </t>
+                                    <ul class="oe_kanban_colorpicker" data-field="color"/>
+                                </div>
+                            </div>
+
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_title ">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            N°:
+                                            <strong>
+                                                <field name="number"/>
+                                            </strong>
+                                        </div>
+                                        <div class="col-6">
+                                            Revision:
+                                            <span class="float-right">
+                                                <field name="revision"/>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="we_cotation_order_list_view" model="ir.ui.view">
+        <field name="name">we.cotation.order.list.view</field>
+        <field name="model">we.cotation.order</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="number"/>
+                <field name="revision"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="we_cotation_order_form_view" model="ir.ui.view">
+        <field name="name">we.cotation.order.form.view</field>
+        <field name="model">we.cotation.order</field>
+        <field name="arch" type="xml">
+            <form string="Quotation Order" class="o_sale_order">
+                <header>
+                    <!-- <field name="stage_id" widget="statusbar" options="{'clickable': '1'}" /> -->
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale"/>
+                </header>
+                <sheet>
+                    <field name="company_id" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                    </div>
+                    <div class="oe_title">
+                        <label class="oe_edit_only" for="number" string="Number"/>
+                        <h1>
+                            <field name="number" placeholder="Number"/>
+                        </h1>
+                    </div>
+                    <group name="quotation_header">
+                        <group name="quotation_detailw">
+                            <field name="revision" />
+                            <field name="deviser_id" widget="many2one"/>
+                        </group>
+                        <group name="partner_details">
+                            <field name="partner_id" widget="res_partner_many2one" context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}" options='{"always_reload": True}'/>
+                        </group>
+                        <group name="order_details">
+                            <field name="show_update_pricelist" invisible="1"/>
+                            <label for="pricelist_id" />
+                            <div class="o_row">
+                                <field name="pricelist_id" options="{'no_open':True,'no_create': True}"/>
+                                <button name="update_prices" type="object" string=" Update Prices" help="Recompute all prices based on this pricelist" class="btn-link mb-1 px-0" icon="fa-refresh" confirm="This will update all unit prices based on the currently set pricelist." attrs="{'invisible': ['|', ('show_update_pricelist', '=', False), ('state', 'in', ['sale', 'done','cancel'])]}"/>
+                            </div>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="quotation_lines" string="Quotation Lines">
+                            <field name="quotation_lines" widget="section_and_note_one2many" mode="tree,kanban" attrs="{'readonly': [('state', 'in', ('done','cancel'))]}">
+                                <form>
+                                    <field name="display_type" invisible="1"/>
+                                    <field name="sequence" invisible="1"/>
+                                    <field name="product_uom_category_id" invisible="1"/>
+                                    <field name="state" invisible="1"/>
+                                    <field name="company_id" invisible="1"/>
+                                </form>
+                                <tree string="Quotation Order Lines" editable="bottom">
+                                    <control>
+                                        <create name="add_product_control" string="Add a product"/>
+                                        <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                        <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                    </control>
+                                    <field name="sequence" widget="handle" />
+                                    <!-- We do not display the type because we don't want the user to be bothered with that information if he has no section or note. -->
+                                    <field name="display_type" invisible="1"/>
+                                    <field name="product_uom_category_id" invisible="1"/>
+                                    <field name="product_updatable" invisible="1"/>
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="product_id" attrs="{
+                                            'readonly': [('product_updatable', '=', False)],
+                                            'required': [('display_type', '=', False)],
+                                        }" options="{'no_open': True}" force_save="1" context="{
+                                            'partner_id': parent.partner_id,
+                                            'quantity': product_uom_qty,
+                                            'uom':product_uom,
+                                            'company_id': parent.company_id,
+                                            'default_description_sale': name
+                                        }" domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]" widget="product_configurator" />
+                                    <field name="product_template_id" string="Product" invisible="1" attrs="{
+                                          'readonly': [('product_updatable', '=', False)],
+                                          'required': [('display_type', '=', False)],
+                                      }" options="{'no_open': True}" context="{
+                                          'partner_id': parent.partner_id,
+                                          'quantity': product_uom_qty,
+                                          'uom':product_uom,
+                                          'company_id': parent.company_id,
+                                          'default_description_sale': name
+                                      }" domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]" widget="product_configurator"/>
+                                    <field name="name" widget="section_and_note_text" optional="show"/>
+                                    <field name="product_uom_qty" decoration-info="(not display_type)" decoration-bf="(not display_type )" context="{
+                                            'partner_id': parent.partner_id,
+                                            'quantity': product_uom_qty,
+                                            'uom': product_uom,
+                                            'company_id': parent.company_id
+                                        }" />
+                                    <field name="product_uom_readonly" invisible="1"/>
+                                    <field name="product_uom" force_save="1" string="UoM" attrs="{
+                                            'readonly': [('product_uom_readonly', '=', True)],
+                                            'required': [('display_type', '=', False)],
+                                        }" context="{'company_id': parent.company_id}" groups="uom.group_uom" options='{"no_open": True}' optional="show" />
+                                    <field name="price_unit" />
+                                    <field name="discount" string="Disc.%" optional="show" widget="product_discount"/>
+                                    <field name="price_subtotal" widget="monetary"/>
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </tree>
+                            </field>
+                            <group name="note_group" col="6" class="mt-2 mt-md-0">
+                                <group colspan="4">
+                                    <field name="note" nolabel="1" placeholder="Terms and conditions..."/>
+                                </group>
+                                <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                                    
+                                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                        <label for="amount_total" />
+                                    </div>
+                                    <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                </group>
+                                <div class="oe_clear"/>
+                            </group>
+                        </page>
+                        <page name="general_information" string="General Information">
+
+                        </page>
+
+                    </notebook>
+
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+
+    <record id="we_cotation_order_action" model="ir.actions.act_window">
+        <field name="name">Cotation</field>
+        <field name="res_model">we.cotation.order</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+    <menuitem id="we_cotation_order_menu" name="Quotations" action="we_cotation_order_action" parent="we_cotation_base_menu" sequence="1"/>
+
+</odoo>
