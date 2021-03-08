@@ -45,9 +45,6 @@ class ProductTemplate(Model):
     is_sheetmetal=fields.Boolean()
     is_beam=fields.Boolean()
     is_predefined_beam=fields.Boolean('Is predefined beam')
-    def _compute_quotation_count(self):
-        for record in self:
-            record.quot_count=self.env['mrp.bom'].search_count(['name','=',record.name])
 
     @api.onchange('name')
     def set_upper(self):    
@@ -55,6 +52,10 @@ class ProductTemplate(Model):
             force=self.get_param(PRODUCT_NAME_FORCE_UPPERCASE)
             self.name = str(self.name).upper() if force else str(self.name)
         return
+
+    # def _compute_quotation_count(self):
+    #     for record in self:
+    #         record.quot_count=self.env['mrp.bom'].search_count(['name','=',record.name])
 
     def _compute_bom_count(self):
         """ overrided method """

@@ -19,13 +19,10 @@ class WeBom(models.Model):
     _inherit='mrp.bom'
 
     type = fields.Selection(selection_add=[('quot','Quotation')], ondelete={'quot': 'cascade'})
-    quotation_id = fields.Many2one('we.cotation',string='Quotation')
+    quotation_line_ids = fields.One2many('we.cotation.order.line','product_bom',string='Quotation Lines')
+    
 
-    @api.constrains('type','quotation_id')
-    def _check_quotation(self):
-        if any(bom.type=='quot' and not bom.quotation_id for bom in self ):
-            raise UserError(_('Quotation must be selected'))
 
-class WeBomLine(models.Model):
-    _inherit = 'mrp.bom.line'
+# class WeBomLine(models.Model):
+#     _inherit = 'mrp.bom.line'
 

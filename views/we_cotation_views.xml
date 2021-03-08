@@ -149,6 +149,7 @@
                                           'company_id': parent.company_id,
                                           'default_description_sale': name
                                       }" domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]" widget="product_configurator"/>
+                                    <field name="product_bom" context="{'company_id': parent.company_id}"></field>
                                     <field name="name" widget="section_and_note_text" optional="show"/>
                                     <field name="product_uom_qty" decoration-info="(not display_type)" decoration-bf="(not display_type )" context="{
                                             'partner_id': parent.partner_id,

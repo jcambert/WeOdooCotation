@@ -19,7 +19,12 @@
         <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='type']" position="after">
-                <field name="quotation_id" attrs="{'invisible': [('type','!=','quot')]}"/>
+                <!-- <field name="quotation_number" widget="one2many" attrs="{'invisible': [('type','!=','quot')]}"/> -->
+                <field name="quotation_line_ids"  attrs="{'invisible': [('type','!=','quot')]}">
+                    <tree>
+                        <field name="quotation_number" />
+                    </tree>
+                </field>
             </xpath>
             <xpath expr="//page[@name='components']" position="replace">
                 <page string="Components" name="components">

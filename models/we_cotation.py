@@ -121,7 +121,7 @@ class WeCotationOrder(Model):
                 'amount_total': amount
             })
 
-class WeCotationOrderLine(Model):
+class WeCotationOrderLine(models.Model):
     _name='we.cotation.order.line'
     _description='Quotation order line'
     _order = 'quotation_id, sequence, id'
@@ -132,8 +132,11 @@ class WeCotationOrderLine(Model):
     currency_id = fields.Many2one(related='quotation_id.currency_id', depends=['quotation_id.currency_id'], store=True, string='Currency', readonly=True)
     company_id = fields.Many2one(related='quotation_id.company_id', string='Company', store=True, readonly=True, index=True)
     quotation_id = fields.Many2one('we.cotation.order', string='Quotation Reference', required=True, ondelete='cascade', index=True, copy=False)
+    quotation_number = fields.Char(related='quotation_id.display_name',string='Number',readonly=True)
+    # quotation_revision = fields.Many2one(related='quotation_id.revision',string='Revision',store=True,readonly=True,index=True)
     product_id = fields.Many2one('product.product', string='Product', domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', company_id)]", change_default=True, ondelete='restrict', check_company=True)  # Unrequired company
     product_template_id = fields.Many2one('product.template', string='Product Template',related="product_id.product_tmpl_id", domain=[DOMAIN_SALE])
+    product_bom = fields.Many2one('mrp.bom',string='Bom',required=True,domain="[('product_tmpl_id','=',product_template_id)]")
     product_updatable = fields.Boolean(compute='_compute_product_updatable', string='Can Edit Product', readonly=True, default=True)
     product_uom_qty = fields.Float(string='Quantity', digits='Product Unit of Measure', required=True, default=1.0)
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure', domain="[('category_id', '=', product_uom_category_id)]")
@@ -171,4 +174,39 @@ class WeCotationOrderLine(Model):
             line.update({
                 'price_subtotal': subtotal,
             })
-            
+    @api.onchange('product_bom')
+    def _on_product_bom_changed(self):
+        for line in self:
+            line.price_unit = line._get_price_from_bom()
+
+    @api.model
+    def _get_price_from_bom(self, boms_to_recompute=False):
+        self.ensure_one()
+        bom = self.env['mrp.bom']._bom_find(product_tmpl=self.product_template_id)
+        return  self._compute_bom_price(bom, boms_to_recompute=boms_to_recompute) if bom else 0.0
+
+    
+    def _compute_bom_price(self, bom, boms_to_recompute=False):
+        self.ensure_one()
+        if not bom:
+            return 0
+        if not boms_to_recompute:
+            boms_to_recompute = []
+        total = 0
+        for opt in bom.operation_ids:
+            duration_expected = (
+                opt.workcenter_id.time_start +
+                opt.workcenter_id.time_stop +
+                opt.time_cycle)
+            total += (duration_expected / 60) * opt.workcenter_id.costs_hour
+        for line in bom.bom_line_ids:
+            if line._skip_bom_line(self):
+                continue
+
+            # Compute recursive if line has `child_line_ids`
+            if line.child_bom_id and line.child_bom_id in boms_to_recompute:
+                child_total = line.product_id._compute_bom_price(line.child_bom_id, boms_to_recompute=boms_to_recompute)
+                total += line.product_id.uom_id._compute_price(child_total, line.product_uom_id) * line.product_qty
+            else:
+                total += line.product_id.uom_id._compute_price(line.product_id.standard_price, line.product_uom_id) * line.product_qty
+        return bom.product_uom_id._compute_price(total / bom.product_qty, self.product_uom)
