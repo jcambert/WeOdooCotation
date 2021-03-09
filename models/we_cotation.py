@@ -176,7 +176,7 @@ class WeCotationOrderLine(models.Model):
             })
     @api.onchange('product_bom')
     def _on_product_bom_changed(self):
-        for line in self:
+        for line in self.filtered(lambda r:r.product_template_id):
             line.price_unit = line._get_price_from_bom()
 
     @api.model
