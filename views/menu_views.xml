@@ -13,4 +13,10 @@
         groups="WeOdooCotation.group_cotation_user"
         parent="we_cotation_base_menu"
         sequence="10"/>
+
+    <menuitem id="we_workcenter_menu"
+            action="mrp.mrp_workcenter_action"
+            groups="mrp.group_mrp_routings"
+            parent="we_cotation_configuration_menu"
+            sequence="90"/>
 </odoo>

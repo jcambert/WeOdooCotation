@@ -52,8 +52,7 @@ class WeProduct(models.Model):
     boms = fields.One2many('we.cotation.bom', 'product', 'Bill of Materials')
     bom_count = fields.Integer('# Bill of Material',compute='_compute_bom_count', compute_sudo=False)
     used_in_bom_count = fields.Integer('# of BoM Where is Used', compute='_compute_used_in_bom_count', compute_sudo=False)
-    # components = fields.Many2many('we.cotation.product','we_cotation_product_rel','product_parent_id','product_child_id',tracking=True,string='Components')
-    # operations = fields.Many2one('we.cotation.operation',string='Operations')
+    
 
     material_cost = fields.Float('Material cost',digits=(16, 2), default='0.0',help='price per unit')
     component_cost = fields.Float('Component cost',digits=(16, 2), default='0.0',help='price per unit',store=True,compute='_compute_component_cost')
@@ -75,11 +74,7 @@ class WeProduct(models.Model):
             defaults['subcontracting_margin']=tpl.subcontracting_margin
             defaults['note']=tpl.note
         return defaults
-    # @api.depends('components')
-    # def _compute_component_cost(self):
-    #     for record in self:
-    #         for cmp in record.components:
-    #             record.component_cost+=cmp.component_cost
+
     
     def _compute_bom_count(self):
         for product in self:

@@ -53,10 +53,6 @@ class ProductTemplate(Model):
             self.name = str(self.name).upper() if force else str(self.name)
         return
 
-    # def _compute_quotation_count(self):
-    #     for record in self:
-    #         record.quot_count=self.env['mrp.bom'].search_count(['name','=',record.name])
-
     def _compute_bom_count(self):
         """ overrided method """
         for product in self:
@@ -118,10 +114,6 @@ class Product(Model):
             if material_attr:
                 _material_attr = record.product_template_attribute_value_ids.filtered(lambda r:r.attribute_id.id==material_attr.id)
                 if _material_attr:
-                #     material=self.material.search([('name','=',_material_attr.product_attribute_value_id.name)],limit=1)
-                #     if material:
-                #         record.material=material
-                #     else:
                     record.material=_material_attr.product_attribute_value_id.material.id
 
             record.auto_surface=0.0
@@ -213,3 +205,4 @@ class Product(Model):
                 if 'finition' in groups:
                     self.finition=groups['finition']
                 self._update_non_standard_profile_values()
+    
