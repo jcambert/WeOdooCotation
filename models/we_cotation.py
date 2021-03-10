@@ -58,7 +58,11 @@ class WeCotationOrder(Model):
         states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
         required=True, change_default=True, index=True, tracking=1,
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",)
-
+    politic_id = fields.Many2one('we.cotation.politic.partner',string='Politic',check_company=True,
+        required=True,readonly=True,
+        states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id),('partner_id','=',partner_id)]", tracking=1,
+        help="If you change the politic, only newly added lines will be affected.")
     show_update_pricelist = fields.Boolean(string='Has Pricelist Changed',
                                            help="Technical Field, True if the pricelist was changed;\n"
                                                 " this will then display a recomputation button")
@@ -172,41 +176,46 @@ class WeCotationOrderLine(models.Model):
         for line in self:
             subtotal = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             line.update({
-                'price_subtotal': subtotal,
+                'price_subtotal': subtotal * line.product_uom_qty
             })
     @api.onchange('product_bom')
     def _on_product_bom_changed(self):
         for line in self.filtered(lambda r:r.product_template_id):
-            line.price_unit = line._get_price_from_bom()
-
-    @api.model
-    def _get_price_from_bom(self, boms_to_recompute=False):
-        self.ensure_one()
-        bom = self.env['mrp.bom']._bom_find(product_tmpl=self.product_template_id)
-        return  self._compute_bom_price(bom, boms_to_recompute=boms_to_recompute) if bom else 0.0
+            line.product_id._set_quotation_price_from_bom()
+            # line.price_unit = line.product_template_id.quot_price
+            line.price_unit = (line.product_template_id.quot_prep_price/line.product_uom_qty)+line.product_template_id.quot_mo_price
+    @api.onchange('product_uom_qty')
+    def _on_product_uom_qty_changed(self):
+        for line in self:
+            line.price_unit = (line.product_template_id.quot_prep_price/line.product_uom_qty)+line.product_template_id.quot_mo_price
+    # @api.model
+    # def _get_price_from_bom(self, boms_to_recompute=False):
+    #     self.ensure_one()
+    #     bom = self.env['mrp.bom']._bom_find(product_tmpl=self.product_template_id)
+    #     return  self._compute_bom_price(bom, boms_to_recompute=boms_to_recompute) if bom else 0.0
 
     
-    def _compute_bom_price(self, bom, boms_to_recompute=False):
-        self.ensure_one()
-        if not bom:
-            return 0
-        if not boms_to_recompute:
-            boms_to_recompute = []
-        total = 0
-        for opt in bom.operation_ids:
-            duration_expected = (
-                opt.workcenter_id.time_start +
-                opt.workcenter_id.time_stop +
-                opt.time_cycle)
-            total += (duration_expected / 60) * opt.workcenter_id.costs_hour
-        for line in bom.bom_line_ids:
-            if line._skip_bom_line(self):
-                continue
+    # def _compute_bom_price(self, bom, boms_to_recompute=False):
+    #     self.ensure_one()
+    #     if not bom:
+    #         return 0
+    #     if not boms_to_recompute:
+    #         boms_to_recompute = []
+    #     total = 0
+    #     for opt in bom.operation_ids:
+    #         duration_expected = (
+    #             opt.workcenter_id.time_start +
+    #             opt.workcenter_id.time_stop +
+    #             opt.time_cycle)
+    #         total += (duration_expected / 60) * opt.workcenter_id.costs_hour
+    #     for line in bom.bom_line_ids:
+    #         if line._skip_bom_line(self):
+    #             continue
 
-            # Compute recursive if line has `child_line_ids`
-            if line.child_bom_id and line.child_bom_id in boms_to_recompute:
-                child_total = line.product_id._compute_bom_price(line.child_bom_id, boms_to_recompute=boms_to_recompute)
-                total += line.product_id.uom_id._compute_price(child_total, line.product_uom_id) * line.product_qty
-            else:
-                total += line.product_id.uom_id._compute_price(line.product_id.standard_price, line.product_uom_id) * line.product_qty
-        return bom.product_uom_id._compute_price(total / bom.product_qty, self.product_uom)
+    #         # Compute recursive if line has `child_line_ids`
+    #         if line.child_bom_id and line.child_bom_id in boms_to_recompute:
+    #             child_total = line.product_id._compute_bom_price(line.child_bom_id, boms_to_recompute=boms_to_recompute)
+    #             total += line.product_id.uom_id._compute_price(child_total, line.product_uom_id) * line.product_qty
+    #         else:
+    #             total += line.product_id.uom_id._compute_price(line.product_id.standard_price, line.product_uom_id) * line.product_qty
+    #     return bom.product_uom_id._compute_price(total / bom.product_qty, self.product_uom)

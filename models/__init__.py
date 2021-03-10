@@ -11,6 +11,7 @@ from . import product
 from . import mrp_workcenter
 from . import mrp_routing
 from . import mrp_bom
+from . import models
 from . import we_material
 from . import we_cotation_category
 from . import we_cotation

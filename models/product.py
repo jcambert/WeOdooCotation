@@ -41,6 +41,11 @@ class ProductTemplate(Model):
 
     libelle = fields.Char('Libelle')
     quot_count = fields.Integer('Quotation',compute='_compute_bom_count', compute_sudo=False)
+    quot_price = fields.Float('Quotation Price', company_dependent=True,
+        digits='Product Price',
+        groups="base.group_user")
+    quot_mo_price = fields.Float('Quotation Mo Price',digits='Product Price',groups="base.group_user")
+    quot_prep_price = fields.Float('Quotation Mo Price',digits='Product Price',groups="base.group_user")
     material = fields.Many2one('we.material','Material')
     is_sheetmetal=fields.Boolean()
     is_beam=fields.Boolean()
@@ -64,10 +69,10 @@ class ProductTemplate(Model):
         pass
     def action_view_quotations(self):
         pass
-
+    
 class Product(Model):
     _inherit = "product.product"
-    _models={'attribute':'product.attribute','material':'we.material'}
+    _models={'attribute':'product.attribute','material':'we.material','bom':'mrp.bom'}
     
     beam_length = fields.Integer('Beam length')
     surface_section = fields.Float('Surface Section', digits='Product Unit of Measure', default=0.0)
@@ -83,6 +88,7 @@ class Product(Model):
     auto_surface=fields.Float('Auto calculated surface',store=True,compute='_compute_material_values', digits='Product Unit of Measure',default=0.0)
     auto_weight=fields.Float('Auto calculated weight',store=True,compute='_compute_material_values',default=0.0)
 
+    
     @api.onchange('name')
     def set_upper(self):    
         if isinstance(self.name,str):
@@ -206,3 +212,39 @@ class Product(Model):
                     self.finition=groups['finition']
                 self._update_non_standard_profile_values()
     
+    def _set_quotation_price_from_bom(self, boms_to_recompute=False):
+        self.ensure_one()
+        bom = self.bom._bom_find(product=self)
+        if bom:
+            (self.quot_prep_price, self.quot_mo_price) = self._compute_quotation_bom_price(bom, boms_to_recompute=boms_to_recompute)
+            self.quot_price=self.quot_prep_price+ self.quot_mo_price
+    
+    def _compute_quotation_bom_price(self, bom, boms_to_recompute=False):
+        self.ensure_one()
+        if not bom:
+            return 0
+        if not boms_to_recompute:
+            boms_to_recompute = []
+        mo_cost=prep_cost= 0
+        for opt in bom.operation_ids:
+            duration_expected = (
+                opt.workcenter_id.time_start +
+                opt.workcenter_id.time_stop +
+                opt.time_cycle)
+            
+            mo_cost += (duration_expected / 60) * opt.workcenter_id.quot_cost
+            prep_cost+=(opt.time_cycle_prep / 60) * opt.workcenter_id.quot_cost_prep
+        for line in bom.bom_line_ids:
+            if line._skip_bom_line(self):
+                continue
+
+            # Compute recursive if line has `child_line_ids`
+            if line.child_bom_id and line.child_bom_id in boms_to_recompute:
+                (child_total_prep, child_total_mo) = line.product_id._compute_quotation_bom_price(line.child_bom_id, boms_to_recompute=boms_to_recompute)
+                mo_cost += line.product_id.uom_id._compute_price(child_total_mo, line.product_uom_id) * line.product_qty
+                prep_cost+=child_total_prep
+            else:
+                mo_cost+=line.product_id.uom_id._compute_price(line.product_id.standard_price, line.product_uom_id) * line.product_qty
+                print(line.product_id.categ_id.name)
+                
+        return (prep_cost, bom.product_uom_id._compute_price(mo_cost / bom.product_qty, self.uom_id))

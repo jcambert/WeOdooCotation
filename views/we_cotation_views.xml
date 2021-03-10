@@ -96,6 +96,7 @@
                         </group>
                         <group name="partner_details">
                             <field name="partner_id" widget="res_partner_many2one" context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}" options='{"always_reload": True}'/>
+                            <field name="politic_id" widget="many2one"  options='{"always_reload": True}'/>
                         </group>
                         <group name="order_details">
                             <field name="show_update_pricelist" invisible="1"/>

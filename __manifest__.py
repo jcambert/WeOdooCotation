@@ -34,6 +34,7 @@
         'views/product_attribute_views.xml',
         'views/we_stage_views.xml',
         'views/we_cotation_category_views.xml',
+        'views/we_cotation_politic_partner.xml',
         'views/we_cotation_views.xml',
         # 'views/product_template_views.xml',
         
