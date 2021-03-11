@@ -35,7 +35,7 @@ class Model(models.AbstractModel):
         # print(key)
         if isinstance(key,str) and key in self._models:
             return self.env[self._models[key]]
-        res =super(AbstractModel, self).__getattr__(self.name)
+        res =super(models.AbstractModel, self).__getattr__(key)
         return res
 
 class BaseArchive(models.AbstractModel):

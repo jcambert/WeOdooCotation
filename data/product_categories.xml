@@ -12,6 +12,18 @@
             <field name="parent_id" ref="product_category_toute"/>
             <field name="name">Achat</field>
         </record>
+        <record forcecreate="True" model="product.category" id="product_category_st">
+            <field name="parent_id" ref="product_category_achat"/>
+            <field name="name">Sous-Traitance</field>
+        </record>
+        <record forcecreate="True" model="product.category" id="product_category_st_pei">
+            <field name="parent_id" ref="product_category_st"/>
+            <field name="name">Peinture</field>
+        </record>
+        <record forcecreate="True" model="product.category" id="product_category_st_usi">
+            <field name="parent_id" ref="product_category_st"/>
+            <field name="name">Usinage</field>
+        </record>
         <record forcecreate="True" model="product.category" id="product_category_mp">
             <field name="parent_id" ref="product_category_achat"/>
             <field name="name">Matiere Premiere</field>

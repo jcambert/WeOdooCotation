@@ -225,7 +225,7 @@ class Product(Model):
             return 0
         if not boms_to_recompute:
             boms_to_recompute = []
-        mo_cost=prep_cost= 0
+        mo_cost=prep_cost=st_cost= 0
         for opt in bom.operation_ids:
             duration_expected = (
                 opt.workcenter_id.time_start +
@@ -245,6 +245,6 @@ class Product(Model):
                 prep_cost+=child_total_prep
             else:
                 mo_cost+=line.product_id.uom_id._compute_price(line.product_id.standard_price, line.product_uom_id) * line.product_qty
-                print(line.product_id.categ_id.name)
+                
                 
         return (prep_cost, bom.product_uom_id._compute_price(mo_cost / bom.product_qty, self.uom_id))
