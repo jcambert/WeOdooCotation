@@ -228,7 +228,7 @@ class Product(Model):
             return 0
         if not boms_to_recompute:
             boms_to_recompute = []
-        mo_cost=prep_cost= 0
+        mo_cost=prep_cost=st_cost= 0
         for opt in bom.operation_ids:
             duration_expected = (
                 opt.workcenter_id.time_start +
