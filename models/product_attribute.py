@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-from odoo import api, fields, models, tools, _
-from odoo.exceptions import UserError, ValidationError
-from odoo.osv import expression
+from odoo import fields
+from .models import Model
 
 
-class ProductAttribute(models.Model):
+class ProductAttribute(Model):
     _inherit = 'product.attribute'
     display_type = fields.Selection( selection_add=[
         ('dimension','Dimension'),
@@ -12,7 +11,7 @@ class ProductAttribute(models.Model):
         ('material','Material')], 
         ondelete={'dimension': 'cascade','thickness': 'cascade','material': 'cascade',})
 
-class ProductAttributeValue(models.Model):
+class ProductAttributeValue(Model):
     _inherit = 'product.attribute.value'
     """ 3 Dimensionnal abilities """
     length = fields.Float('Length',default=0.0)

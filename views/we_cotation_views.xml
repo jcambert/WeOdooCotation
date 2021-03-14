@@ -96,7 +96,7 @@
                         </group>
                         <group name="partner_details">
                             <field name="partner_id" widget="res_partner_many2one" context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}" options='{"always_reload": True}'/>
-                            <field name="politic_id" widget="many2one"  options='{"always_reload": True}'/>
+                            <field name="politic_id" widget="many2one" options='{"always_reload": True}'/>
                         </group>
                         <group name="order_details">
                             <field name="show_update_pricelist" invisible="1"/>
@@ -130,6 +130,7 @@
                                     <field name="product_uom_category_id" invisible="1"/>
                                     <field name="product_updatable" invisible="1"/>
                                     <field name="company_id" invisible="1"/>
+                                    <field name="id" invisible="1"/>
                                     <field name="product_id" attrs="{
                                             'readonly': [('product_updatable', '=', False)],
                                             'required': [('display_type', '=', False)],
@@ -168,6 +169,8 @@
                                     <field name="price_subtotal" widget="monetary"/>
                                     <field name="company_id" invisible="1"/>
                                     <field name="currency_id" invisible="1"/>
+                                    <button icon="fa-refresh" type="object" name="update_price_action" />
+                                    <button icon="fa-edit" type="object" name="edit_order_line_action" />
                                 </tree>
                             </field>
                             <group name="note_group" col="6" class="mt-2 mt-md-0">
@@ -175,7 +178,7 @@
                                     <field name="note" nolabel="1" placeholder="Terms and conditions..."/>
                                 </group>
                                 <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
-                                    
+
                                     <div class="oe_subtotal_footer_separator oe_inline o_td_label">
                                         <label for="amount_total" />
                                     </div>
@@ -201,13 +204,50 @@
         </field>
     </record>
 
-
+    <record id="we_cotation_order_line_form_view" model="ir.ui.view">
+        <field name="name">we.cotation.order.line.form.view</field>
+        <field name="model">we.cotation.order.line</field>
+        <field name="arch" type="xml">
+            <form string="Order Line">
+                <header>
+                    <button string="Update Price" type="object" name="update_price_action" />
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="product_template_id" invisible="1"/>
+                            <field name="product_uom_category_id" />
+                            <field name="product_id"/>
+                            <field name="product_bom" />
+                            <field name="name" />
+                            <field name="product_uom_qty" />
+                            <field name="product_uom" />
+                            <field name="price_unit"/>
+                            <field name="discount" />
+                            <field name="price_subtotal" />
+                            <field name="categories" widget="one2many" />
+                            <field name="quot_prep_price" />
+                            <field name="quot_mo_price" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
     <record id="we_cotation_order_action" model="ir.actions.act_window">
         <field name="name">Cotation</field>
         <field name="res_model">we.cotation.order</field>
         <field name="view_mode">kanban,tree,form</field>
     </record>
+
+    <record id="we_cotation_order_line_action" model="ir.actions.act_window">
+        <field name="name">Order Line</field>
+        <field name="res_model">we.cotation.order.line</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+
     <menuitem id="we_cotation_order_menu" name="Quotations" action="we_cotation_order_action" parent="we_cotation_base_menu" sequence="1"/>
 
 </odoo>

@@ -125,29 +125,33 @@ class WeCotationOrder(Model):
                 'amount_total': amount
             })
 
-class WeCotationOrderLine(models.Model):
+class WeCotationOrderLine(Model):
     _name='we.cotation.order.line'
     _description='Quotation order line'
     _order = 'quotation_id, sequence, id'
     _check_company_auto = True
-
+    _models={'categs':'we.cotation.order.line.category','uom':'uom.uom'}
     sequence = fields.Integer(string='Sequence', default=10)
     name = fields.Text(string='Description', required=True)
     currency_id = fields.Many2one(related='quotation_id.currency_id', depends=['quotation_id.currency_id'], store=True, string='Currency', readonly=True)
     company_id = fields.Many2one(related='quotation_id.company_id', string='Company', store=True, readonly=True, index=True)
-    quotation_id = fields.Many2one('we.cotation.order', string='Quotation Reference', required=True, ondelete='cascade', index=True, copy=False)
+    quotation_id = fields.Many2one('we.cotation.order', string='Quotation Reference', required=True, on_delete='cascade', index=True, copy=False)
     quotation_number = fields.Char(related='quotation_id.display_name',string='Number',readonly=True)
+    categories= fields.One2many('we.cotation.order.line.category','order_line',string='Order Line',on_delete='cascade')
     # quotation_revision = fields.Many2one(related='quotation_id.revision',string='Revision',store=True,readonly=True,index=True)
     product_id = fields.Many2one('product.product', string='Product', domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', company_id)]", change_default=True, ondelete='restrict', check_company=True)  # Unrequired company
     product_template_id = fields.Many2one('product.template', string='Product Template',related="product_id.product_tmpl_id", domain=[DOMAIN_SALE])
-    product_bom = fields.Many2one('mrp.bom',string='Bom',required=True,domain="[('product_tmpl_id','=',product_template_id)]")
+    product_bom = fields.Many2one('mrp.bom',string='Bom',required=True,domain="[('product_tmpl_id','=',product_template_id),('type','=','quot')]")
     product_updatable = fields.Boolean(compute='_compute_product_updatable', string='Can Edit Product', readonly=True, default=True)
     product_uom_qty = fields.Float(string='Quantity', digits='Product Unit of Measure', required=True, default=1.0)
-    product_uom = fields.Many2one('uom.uom', string='Unit of Measure', domain="[('category_id', '=', product_uom_category_id)]")
+    product_uom = fields.Many2one(_models['uom'] , string='Unit of Measure', domain="[('category_id', '=', product_uom_category_id)]")
     product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id', readonly=True)
     product_uom_readonly = fields.Boolean(compute='_compute_product_uom_readonly')
 
-    price_unit = fields.Float('Unit Price', required=True, digits='Product Price', default=0.0)
+    quot_prep_price=fields.Float('Preparation',related='product_template_id.quot_prep_price')
+    quot_mo_price=fields.Float('Main Oeuvre',related='product_template_id.quot_mo_price')
+    
+    price_unit = fields.Float('Unit Price', compute="_compute_price_unit",store=True, digits='Product Price', default=0.0)
     discount = fields.Float(string='Discount (%)', digits='Discount', default=0.0)
     price_subtotal = fields.Monetary(compute='_compute_amount', string='Subtotal', readonly=True, store=True)
 
@@ -155,7 +159,25 @@ class WeCotationOrderLine(models.Model):
         ('line_section', "Section"),
         ('line_note', "Note")], default=False, help="Technical field for UX purpose.")
     state = fields.Selection(related='quotation_id.state', string='Quotation Status', readonly=True, copy=False, store=True, default='draft')
-    
+
+    def _get_default_product_uom(self):
+        return self.env['uom.uom'].search([], limit=1, order='id').id
+
+    def edit_order_line_action(self):
+        self.ensure_one()
+        print('Edit order line %s' % self.id)
+        action = self.env["ir.actions.actions"]._for_xml_id("WeOdooCotation.we_cotation_order_line_action")
+        action['res_id'] =self.id
+        action['views'] = [(self.env.ref('WeOdooCotation.we_cotation_order_line_form_view').id, 'form')]
+        return action
+
+    def update_price_action(self):
+        self.ensure_one()
+        self.update_price(update_categories=True)
+        
+    def name_get(self):
+        return [(record.id, '%s x %s %s' % (record.name, record.product_uom_qty,record.product_uom.display_name ) ) for record in self]
+
     @api.depends('product_id', 'quotation_id.state')
     def _compute_product_updatable(self):
         for line in self:
@@ -163,6 +185,7 @@ class WeCotationOrderLine(models.Model):
                 line.product_updatable = False
             else:
                 line.product_updatable = True
+
     @api.depends('state')
     def _compute_product_uom_readonly(self):
         for line in self:
@@ -178,44 +201,62 @@ class WeCotationOrderLine(models.Model):
             line.update({
                 'price_subtotal': subtotal * line.product_uom_qty
             })
-    @api.onchange('product_bom')
-    def _on_product_bom_changed(self):
-        for line in self.filtered(lambda r:r.product_template_id):
-            line.product_id._set_quotation_price_from_bom()
-            # line.price_unit = line.product_template_id.quot_price
-            line.price_unit = (line.product_template_id.quot_prep_price/line.product_uom_qty)+line.product_template_id.quot_mo_price
-    @api.onchange('product_uom_qty')
-    def _on_product_uom_qty_changed(self):
+
+    # @api.onchange('product_bom')
+    # def _on_product_bom_changed(self):
+    #     for line in self.filtered(lambda r:r.product_template_id):
+    #         line.product_id._set_quotation_price_from_bom(line.product_bom)
+
+    # @api.onchange('product_id')
+
+    @api.depends('categories.marged_price','categories.category','product_uom_qty','product_bom')
+    def _compute_price_unit(self):
         for line in self:
-            line.price_unit = (line.product_template_id.quot_prep_price/line.product_uom_qty)+line.product_template_id.quot_mo_price
-    # @api.model
-    # def _get_price_from_bom(self, boms_to_recompute=False):
-    #     self.ensure_one()
-    #     bom = self.env['mrp.bom']._bom_find(product_tmpl=self.product_template_id)
-    #     return  self._compute_bom_price(bom, boms_to_recompute=boms_to_recompute) if bom else 0.0
+            line.update_price()
 
-    
-    # def _compute_bom_price(self, bom, boms_to_recompute=False):
-    #     self.ensure_one()
-    #     if not bom:
-    #         return 0
-    #     if not boms_to_recompute:
-    #         boms_to_recompute = []
-    #     total = 0
-    #     for opt in bom.operation_ids:
-    #         duration_expected = (
-    #             opt.workcenter_id.time_start +
-    #             opt.workcenter_id.time_stop +
-    #             opt.time_cycle)
-    #         total += (duration_expected / 60) * opt.workcenter_id.costs_hour
-    #     for line in bom.bom_line_ids:
-    #         if line._skip_bom_line(self):
-    #             continue
+    @api.model
+    def update_price(self, update_categories=False):
+        self.ensure_one()
+        if update_categories:
+            self.update_categories()
+        cat_price=0.0
+        for cat in self.categories.mapped(lambda r:r.marged_price):
+            cat_price+=cat
+        self.product_id._set_quotation_price_from_bom(self.product_bom)
+        price = (self.product_template_id.quot_prep_price/self.product_uom_qty)+self.product_template_id.quot_mo_price+cat_price
+        self.price_unit=price
+    @api.model
+    def create_categories(self):
+        self.ensure_one()
+        self.categories=[(5,0,0)]
+        def init_categories(line):
+            return dict.fromkeys(line.quotation_id.politic_id.categories.category.mapped('id'),0.0)
+        new_categ_lines_ids=[]
+        categories=init_categories(self)
+        self.product_id._set_quotation_categories_from_bom(self.product_bom,categories)
 
-    #         # Compute recursive if line has `child_line_ids`
-    #         if line.child_bom_id and line.child_bom_id in boms_to_recompute:
-    #             child_total = line.product_id._compute_bom_price(line.child_bom_id, boms_to_recompute=boms_to_recompute)
-    #             total += line.product_id.uom_id._compute_price(child_total, line.product_uom_id) * line.product_qty
-    #         else:
-    #             total += line.product_id.uom_id._compute_price(line.product_id.standard_price, line.product_uom_id) * line.product_qty
-    #     return bom.product_uom_id._compute_price(total / bom.product_qty, self.product_uom)
+        for key in categories:
+            politic_lines=self.quotation_id.politic_id.categories.filtered(lambda r:r.category.id==key)
+            for politic_line in politic_lines:
+                new_categ_line=self.categs.create({'order_line':self.id, 'category':politic_line.id,'price':categories[key]})
+                new_categ_lines_ids.append(new_categ_line.id)
+        self.categories=[(6,0,new_categ_lines_ids)]
+
+    @api.model
+    def update_categories(self):
+        self.ensure_one()
+        categories = dict.fromkeys( self.categories.category.category.mapped('id'),0.0)
+        self.product_id._set_quotation_categories_from_bom(self.product_bom, categories)
+        for cat in categories:
+            category=self.categories.filtered(lambda r:r.category.category.id==cat)
+            if not category:
+                continue
+            category.write({'price':categories[cat]})
+            
+    @api.model_create_multi
+    def create(self, vals_list):
+        lines = super().create(vals_list)
+        for line in lines:
+            line.create_categories()
+        
+        return lines

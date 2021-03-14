@@ -1,7 +1,10 @@
 id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
 cotation_user_order,cotation_user,model_we_cotation_order,group_cotation_user,1,1,1,1
 cotation_user_order_line,cotation_user,model_we_cotation_order_line,group_cotation_user,1,1,1,1
+cotation_user_order_line_category,cotation_user,model_we_cotation_order_line_category,group_cotation_user,1,1,1,1
 cotation_user_stage,cotation_user,model_we_cotation_stage,group_cotation_user,1,1,1,1
 cotation_user_material,cotation_user,model_we_material,group_cotation_user,1,1,1,1
 cotation_user_category,cotation_user,model_we_cotation_category,group_cotation_user,1,1,1,
 cotation_user_politic_partner,cotation_user,model_we_cotation_politic_partner,group_cotation_user,1,1,1,
+cotation_user_bom_line_calculation,cotation_user,model_we_cotation_bom_line_calculation,group_cotation_user,1,1,1,
+cotation_user_bom_line_calculation_allowed_sheetmetal,cotation_user,model_we_cotation_bom_line_calculation_allowed_sheetmetal,group_cotation_user,1,1,1,

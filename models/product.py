@@ -180,7 +180,7 @@ class Product(Model):
             self.is_predefined_beam=False
             groups={}
             beam=beam_types.filtered(lambda r:self._filterByRe(r.convention,self.name,groups))
-            if profile.exists() and beam.ensure_one():
+            if beam.exists() and beam.ensure_one():
                 self.beam_type=beam
                 if clear_name or clear_cat:
                     self.beam_length=0
@@ -212,14 +212,17 @@ class Product(Model):
                     self.finition=groups['finition']
                 self._update_non_standard_profile_values()
     
-    def _set_quotation_price_from_bom(self, boms_to_recompute=False):
+    def _set_quotation_price_from_bom(self,bom=False, categories={}, boms_to_recompute=False):
         self.ensure_one()
-        bom = self.bom._bom_find(product=self)
+        bom = self.bom._bom_find(product=self) if not bom else bom
         if bom:
-            (self.quot_prep_price, self.quot_mo_price) = self._compute_quotation_bom_price(bom, boms_to_recompute=boms_to_recompute)
+            (self.quot_prep_price, self.quot_mo_price) = self._compute_quotation_bom_price(bom,categories, boms_to_recompute=boms_to_recompute)
             self.quot_price=self.quot_prep_price+ self.quot_mo_price
+            return bom
+        return False
     
-    def _compute_quotation_bom_price(self, bom, boms_to_recompute=False):
+    
+    def _compute_quotation_bom_price(self, bom,categories={}, boms_to_recompute=False):
         self.ensure_one()
         if not bom:
             return 0
@@ -240,11 +243,32 @@ class Product(Model):
 
             # Compute recursive if line has `child_line_ids`
             if line.child_bom_id and line.child_bom_id in boms_to_recompute:
-                (child_total_prep, child_total_mo) = line.product_id._compute_quotation_bom_price(line.child_bom_id, boms_to_recompute=boms_to_recompute)
+                (child_total_prep, child_total_mo) = line.product_id._compute_quotation_bom_price(line.child_bom_id,categories=categories, boms_to_recompute=boms_to_recompute)
                 mo_cost += line.product_id.uom_id._compute_price(child_total_mo, line.product_uom_id) * line.product_qty
                 prep_cost+=child_total_prep
             else:
-                mo_cost+=line.product_id.uom_id._compute_price(line.product_id.standard_price, line.product_uom_id) * line.product_qty
-                print(line.product_id.categ_id.name)
+                price=line.product_id.uom_id._compute_price(line.product_id.standard_price, line.product_uom_id) * line.product_qty
+                mo_cost+=price
+                if line.product_id.categ_id.id in categories:
+                    categories[line.product_id.categ_id.id]+=price
                 
         return (prep_cost, bom.product_uom_id._compute_price(mo_cost / bom.product_qty, self.uom_id))
+    
+    def _set_quotation_categories_from_bom(self,bom=False, categories={}):
+        self.ensure_one()
+        bom = self.bom._bom_find(product=self) if not bom else bom
+        if bom:
+            self._compute_quotation_categories_from_bom(bom,categories)
+            
+    def _compute_quotation_categories_from_bom(self,bom,categories={}):
+        self.ensure_one()
+        if not bom:
+            return False
+        for line in bom.bom_line_ids:
+            if line._skip_bom_line(self):
+                continue
+            if line.child_bom_id :
+                line.product_id._compute_quotation_categories_from_bom(line.child_bom_id,categories=categories)
+            elif line.product_id.categ_id.id in categories:
+                price=line.product_id.uom_id._compute_price(line.product_id.standard_price, line.product_uom_id) * line.product_qty
+                categories[line.product_id.categ_id.id]+=price

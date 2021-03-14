@@ -19,6 +19,7 @@ class WeCotationPartnerPolitic(Model):
         required=True, change_default=True, index=True, tracking=1,
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",)
     categories = fields.Many2many('we.cotation.category','we_cotation_category_rel','politic_id','category_id',string='Categories')
+    
 
     def name_get(self):
         return [(politic.id, '%s (%s)' % (politic.name, politic.partner_id.name)) for politic in self]
@@ -40,3 +41,19 @@ class WeCotationCategory(Model):
     def _check_margin(self):
         if any(record.margin<0 for record in self ):
             raise UserError(_('Margin category must be greater or equal to zero'))
+
+class WeCotationOrderLineCategory(Model):
+    _name='we.cotation.order.line.category'
+    _description='Group category quotation for a line'
+    order_line=fields.Many2one('we.cotation.order.line',required=True,string='Order Line')
+    category=fields.Many2one('we.cotation.category',required=True,string='Quotation Category')
+    price=fields.Float('Price')
+    marged_price=fields.Float('Marged price',compute='_compute_price',store=True)
+    margin=fields.Float('Margin',related='category.margin')
+
+    @api.depends('price','category')
+    def _compute_price(self):
+        for record in self:
+            record.marged_price = record.price+(record.price * (record.category.margin/100))
+
+    

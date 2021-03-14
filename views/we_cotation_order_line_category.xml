@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="we_cotation_order_line_category_tree_view" model="ir.ui.view">
+        <field name="name">we.cotation.order.line.category.tree.view</field>
+        <field name="model">we.cotation.order.line.category</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="order_line" />
+                <field name="category" />
+                <field name="price" />
+                <field name="margin" />
+                <field name="marged_price" />
+            </tree>
+        </field>
+    </record>
+    <record id="we_cotation_order_line_category_action" model="ir.actions.act_window">
+        <field name="name">Category Lines </field>
+        <field name="res_model">we.cotation.order.line.category</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="we_cotation_order_line_category_menu" action="we_cotation_order_line_category_action" parent="we_cotation_configuration_menu" name="Order Line Categories" sequence="97"/>
+</odoo>

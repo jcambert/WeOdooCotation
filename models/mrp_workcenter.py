@@ -1,7 +1,7 @@
 from odoo.exceptions import AccessError, UserError
 from odoo import models, fields, api, _
-
-class WeWorkcenter(models.Model):
+from .models import Model
+class WeWorkcenter(Model):
     _inherit=['mrp.workcenter']
 
     
@@ -10,7 +10,6 @@ class WeWorkcenter(models.Model):
     quot_cost = fields.Float(string='Execution', help='Specify quotation cost of work center per hour.', default=0.0)
     quot_help = fields.Char('Operation information',default='')
     quot_cost_prep=fields.Integer('Preparation',help="Cost time pr for preparation",default=0)
-    # quot_cost_time_exec=fields.Integer('Cost Time PR Execution',help="Cost time pr for execution",default=0)
     quot_default_time_prep=fields.Float('Default Time for preparation',digits=(2, 1),required=True,default=0.0)
     quot_base_time=fields.Float('Base time execution',digits=(16, 5) ,required=True,default=0.0)
     quot_margin=fields.Float(string='Margin',store=True,help='Margin belongs to cost Hour',readonly=True,compute='_compute_quotation_margin')
@@ -33,8 +32,7 @@ class WeWorkcenter(models.Model):
     def _check_quot_base_time(self):
         if any( record.quot_base_time<0 for record in self):
             raise UserError(_('Quotation base time must be greater or equal to zero'))
-    # @api.onchange('costs_hour')
-    # def _on_costs_hour_change(self):
+    
 
 
     def _compute_is_speed(self):
@@ -45,7 +43,7 @@ class WeWorkcenter(models.Model):
         for workcenter in self:
             workcenter.quot_margin=workcenter.costs_hour / workcenter.quot_cost if workcenter.quot_cost>0 else 0.0
 
-class WeWorkcenterSpeed(models.Model):
+class WeWorkcenterSpeed(Model):
     _name='mrp.workcenter.speed'
     _description='Workkcenter speed according material/thickness, ...'
 

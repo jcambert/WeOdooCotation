@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="we_cotation_bom_line_calculation_view_form" model="ir.ui.view">
+        <field name="name">we.cotation.bom_line.calculation.view.form</field>
+        <field name="model">we.cotation.bom.line.calculation</field>
+        <field name="arch" type="xml">
+            <form string="Calculation">
+                <sheet>
+
+                    <group>
+                        <group string="General">
+                            <field name="type" />
+                        </group>
+                        <div class="cearfix"/>
+                        <group string="Piece dimension">
+                            <field name="length" />
+                            <field name="width" />
+                            <field name="thickness" />
+                            <field name="material_volmass" />
+                        </group>
+                        <group string="Informations">
+                            <field name="piece_surface" />
+                            <field name="piece_weight" />
+                        </group>
+                        <group string="Distances">
+                            <field name="x_space" />
+                            <field name="y_space" />
+                        </group>
+                        <group string="Protection">
+                            <field name="left_sheetmetal_protection" />
+                            <field name="right_sheetmetal_protection" />
+                            <field name="top_sheetmetal_protection" />
+                            <field name="bottom_sheetmetal_protection" />
+                        </group>
+                        <group string="Formats">
+                            <field name="allowed_sheetmetal_ids" mode="tree">
+                                <tree string="Allowed format" editable="bottom">
+                                    <field name="available" />
+                                    <field name="length" />
+                                    <field name="width" />
+                                    <field name="best" />
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Resultat">
+                            <field name="best_length" />
+                            <field name="best_width" />
+                            <field name="best_sheetmetal_length" />
+                            <field name="best_sheetmetal_width" />
+                            <field name="qty_per_sheetmetal" />
+                            <field name="weight_per_piece" />
+                            <field name="percentage_loss" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="we_cotation_bom_line_calculation_view_tree" model="ir.ui.view">
+        <field name="name">we.cotation.bom_line.calculation.view.tree</field>
+        <field name="model">we.cotation.bom.line.calculation</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="type" />
+                <field name="length" />
+                <field name="width" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="we_cotation_bom_line_calculation_action" model="ir.actions.act_window">
+        <field name="name">Calculations</field>
+        <field name="res_model">we.cotation.bom.line.calculation</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+    <menuitem id="we_cotation_bom_line_calculation_menu" name="Calculations" action="we_cotation_bom_line_calculation_action" parent="we_cotation_base_menu" sequence="3"/>
+
+</odoo>

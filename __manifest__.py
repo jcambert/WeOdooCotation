@@ -36,6 +36,8 @@
         'views/we_cotation_category_views.xml',
         'views/we_cotation_politic_partner.xml',
         'views/we_cotation_views.xml',
+        'views/we_cotation_order_line_category.xml',
+        'views/we_cotation_bom_line_calculation_views.xml',
         # 'views/product_template_views.xml',
         
         # 'data/ir_cron.xml',

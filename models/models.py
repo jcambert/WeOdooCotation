@@ -1,5 +1,5 @@
 from odoo import models, fields, api,_
-
+from . import models as _inner_models
 from ast import literal_eval as _literal_eval
 import logging
 import re
@@ -27,7 +27,7 @@ class Model(models.AbstractModel):
     _abstract = False           # not abstract
     _transient = False          # not transient
 
-    _models={}
+    _models=_inner_models
     def get_param(self,key):
         return literal_eval( self.env['ir.config_parameter'].get_param(key) or False)
 
@@ -35,7 +35,7 @@ class Model(models.AbstractModel):
         # print(key)
         if isinstance(key,str) and key in self._models:
             return self.env[self._models[key]]
-        res =super(AbstractModel, self).__getattr__(self.name)
+        res =super(models.AbstractModel, self).__getattr__(self.name)
         return res
 
 class BaseArchive(models.AbstractModel):
