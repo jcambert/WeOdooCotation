@@ -11,8 +11,19 @@
                     <group>
                         <group string="General">
                             <field name="type" />
+                            <field name="no_best" invisible="1"/>
+                            <field name="no_value" invisible="1"/>
+                            <div class="o_row">
+                                <div class="alert alert-danger text-wrap text-capitalize font-weight-bold lead" attrs="{'invisible': [ ('no_value', '=', False)]}">
+                                Setup/Check your values
+                                </div>
+                                <div class="alert alert-danger text-wrap text-capitalize font-weight-bold lead" attrs="{'invisible': ['|',  ('no_best', '=', False),('no_value','=',True)]}">
+                                there is no format that fit piece
+                                </div>
+                            </div>
                         </group>
-                        <div class="cearfix"/>
+
+                        <div class="clearfix"/>
                         <group string="Piece dimension">
                             <field name="length" />
                             <field name="width" />
@@ -20,6 +31,7 @@
                             <field name="material_volmass" />
                         </group>
                         <group string="Informations">
+                            <field name="piece_perimetre" />
                             <field name="piece_surface" />
                             <field name="piece_weight" />
                         </group>
@@ -44,10 +56,8 @@
                             </field>
                         </group>
                         <group string="Resultat">
-                            <field name="best_length" />
-                            <field name="best_width" />
-                            <field name="best_sheetmetal_length" />
-                            <field name="best_sheetmetal_width" />
+                            <field name="best_piece_format" string="Format piece"/>
+                            <field name="best_sheetmetal_format" string="format sheetmetal"/>
                             <field name="qty_per_sheetmetal" />
                             <field name="weight_per_piece" />
                             <field name="percentage_loss" />
