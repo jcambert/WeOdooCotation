@@ -29,7 +29,6 @@
         'views/mrp_routing_views.xml',
         'views/mrp_bom_views.xml',
         'views/res_config_settings_view.xml',
-        # 'views/bom_views.xml',
         'views/product_views.xml',
         'views/product_attribute_views.xml',
         'views/we_stage_views.xml',
@@ -38,17 +37,9 @@
         'views/we_cotation_views.xml',
         'views/we_cotation_order_line_category.xml',
         'views/we_cotation_bom_line_calculation_views.xml',
-        # 'views/product_template_views.xml',
-        
-        # 'data/ir_cron.xml',
-
-        # 'data/workcenters.xml',
-        # 'data/stages.xml',
-        # 'data/product_template.xml',
+        'report/report.xml',
         'data/product_attribute.xml',
         'data/product_categories.xml'
-
-
     ],
     'qweb': ['static/src/xml/*.xml'],
     # only loaded in demonstration mode

@@ -15,12 +15,20 @@ class WeCotationBomLineCalculation(Model):
     length=fields.Integer('Length',default=0)
     width=fields.Integer('Width',default=0)
     thickness=fields.Float('Thickness')
+    quantity=fields.Integer('Quantity')
     material_name=fields.Char('Material name')
     material_volmass=fields.Float('Volumic mass')
+    material_price=fields.Float('Material Price')
 
     piece_weight=fields.Float('Piece Weight',compute="_compute_best",store=True,readonly=True)
     piece_surface=fields.Float('Piece Surface',compute="_compute_best",store=True,readonly=True)
     piece_perimetre = fields.Float('Piece Perimetre',compute="_compute_best",store=True,readonly=True)
+
+    total_piece_weight=fields.Float('Total Weight',compute="_compute_total",store=True,readonly=True)
+    total_piece_surface=fields.Float('Total Surface',compute="_compute_total",store=True,readonly=True)
+
+    unit_price=fields.Float('Unit Price',compute="_compute_amount",store=True,readonly=True)
+    total_price=fields.Float('total Price',compute="_compute_amount",store=True,readonly=True)
 
     x_space=fields.Integer('X Space',default=10)
     y_space=fields.Integer('Y Space',default=10)
@@ -37,8 +45,8 @@ class WeCotationBomLineCalculation(Model):
     best_sheetmetal_format=fields.Char('Sheetmetal Format',compute="_compute_format",readonly=True)
     best_piece_format=fields.Char('Piece Format',compute="_compute_format",readonly=True)
 
-    qty_per_sheetmetal=fields.Float('Qty of piece per Sheetmetal',compute="_compute_best",store=True,readonly=True)
-    weight_per_piece=fields.Float('Weight per piece in Sheetmetal',compute="_compute_best",store=True,readonly=True)
+    qty_per_sheetmetal=fields.Integer('Quantity',compute="_compute_best",store=True,readonly=True)
+    weight_per_piece=fields.Float('Weight',compute="_compute_best",store=True,readonly=True)
     percentage_loss=fields.Float('Percentage of loss',compute="_compute_best",store=True,readonly=True)
 
     allowed_sheetmetal_ids = fields.One2many('we.cotation.bom.line.calculation.allowed.sheetmetal','line_calculation',string='Alloweds')
@@ -117,6 +125,18 @@ class WeCotationBomLineCalculation(Model):
             record.best_piece_format='%.2f x %.2f' % (record.best_length,record.best_width)
         for record in self - filtered:
              record.best_sheetmetal_format= record.best_piece_format='' 
+
+    @api.depends('quantity','piece_weight','piece_surface')
+    def _compute_total(self):
+        for record in self:
+            record.total_piece_weight=record.quantity*record.piece_weight
+            record.total_piece_surface=record.quantity*record.piece_surface
+    
+    @api.depends('material_price','piece_weight','quantity')
+    def _compute_amount(self):
+        for record in self:
+            record.unit_price=record.material_price*record.piece_weight
+            record.total_price=record.unit_price*record.quantity
 
 class WeCotationBomLineCalculationAllowedSheetmetal(Model):
     _name='we.cotation.bom.line.calculation.allowed.sheetmetal'

@@ -27,8 +27,14 @@
                         <group string="Piece dimension">
                             <field name="length" />
                             <field name="width" />
+                            <field name="quantity" />
                             <field name="thickness" />
-                            <field name="material_volmass" />
+
+                        </group>
+                        <group string="Material">
+                            <field name="material_name" string="material"/>
+                            <field name="material_volmass" string="Volumic mass"/>
+                            <field name="material_price" string="Price"/>
                         </group>
                         <group string="Informations">
                             <field name="piece_perimetre" />
@@ -61,6 +67,12 @@
                             <field name="qty_per_sheetmetal" />
                             <field name="weight_per_piece" />
                             <field name="percentage_loss" />
+                            <field name="total_piece_weight" />
+                            <field name="total_piece_surface" />
+                        </group>
+                        <group string="Cost">
+                            <field name="unit_price" />
+                            <field name="total_price" />
                         </group>
                     </group>
                 </sheet>
