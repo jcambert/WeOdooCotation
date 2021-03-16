@@ -19,6 +19,7 @@ class WeCotationBomLineCalculation(Model):
     material_name=fields.Char('Material name')
     material_volmass=fields.Float('Volumic mass')
     material_price=fields.Float('Material Price')
+    allow_rot=fields.Float('90° rotation',default=True)
 
     piece_weight=fields.Float('Piece Weight',compute="_compute_best",store=True,readonly=True)
     piece_surface=fields.Float('Piece Surface',compute="_compute_best",store=True,readonly=True)
@@ -94,23 +95,25 @@ class WeCotationBomLineCalculation(Model):
             for std_dim in record.allowed_sheetmetal_ids.filtered(lambda r:r.available):
                 
                 cut_length=(std_dim.length-record.left_sheetmetal_protection-record.right_sheetmetal_protection)
-                cut_width=(std_dim.width-record.top_sheetmetal_protection-record.bottom_sheetmetal_protection)
+                cut_width=(std_dim.width-record.top_sheetmetal_protection-record.bottom_sheetmetal_protection-record.y_space)
 
                 nb_x=int(cut_length/(record.length+record.x_space))
                 nb_y=int(cut_width/(record.width+record.y_space))
 
                 nb=nb_x*nb_y
                 if nb>0:
-                    percentage_loss=((std_dim.length*std_dim.width)-(record.length*record.width*nb)) / (std_dim.length*std_dim.width)
+                    sheetmetal_surface=std_dim.length*std_dim.width
+                    percentage_loss=(((sheetmetal_surface)-(piece_surface*nb)) / (sheetmetal_surface) if sheetmetal_surface>0 else 0)
+                    std_dim.percentage_loss=percentage_loss
                     if not best_percentage_loss or best_percentage_loss>percentage_loss:
-                        sheetmetal_surface=std_dim.length*std_dim.width
-                        record.best_length=(std_dim.length/nb_x if nb_x>0 else 0)
-                        record.best_width=(std_dim.width/nb_y if nb_y>0 else 0)
+                        best_percentage_loss=percentage_loss
+                        record.best_length=std_dim.length/nb_x 
+                        record.best_width=std_dim.width/nb_y 
                         record.best_sheetmetal_length=std_dim.length
                         record.best_sheetmetal_width=std_dim.width
                         record.qty_per_sheetmetal=nb
                         record.weight_per_piece=(record.best_length*record.best_width*record.thickness*record.material_volmass)/1000000
-                        record.percentage_loss=( (sheetmetal_surface-(piece_surface*nb))/sheetmetal_surface if sheetmetal_surface>0 else 0)
+                        record.percentage_loss=percentage_loss
                         best_id=std_dim.id
                         pass
             record.no_best= best_id==False
@@ -138,6 +141,12 @@ class WeCotationBomLineCalculation(Model):
             record.unit_price=record.material_price*record.piece_weight
             record.total_price=record.unit_price*record.quantity
 
+    @api.onchange('allow_rot')
+    def _on_allow_rot_changed(self):
+        self.ensure_one()
+        for record in self.allowed_sheetmetal_ids:
+            record.available= record.length<record.width and self.allow_rot   
+
 class WeCotationBomLineCalculationAllowedSheetmetal(Model):
     _name='we.cotation.bom.line.calculation.allowed.sheetmetal'
     _description='Allowed sheetmal for a calculation'
@@ -146,4 +155,5 @@ class WeCotationBomLineCalculationAllowedSheetmetal(Model):
     available=fields.Boolean('Available',default=True)
     length=fields.Integer('Length')
     width=fields.Integer('Width')
+    percentage_loss=fields.Float('Loss',default=0.0)
     best=fields.Boolean('Best',readonly=True)

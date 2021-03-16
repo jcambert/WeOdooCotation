@@ -29,7 +29,7 @@
                             <field name="width" />
                             <field name="quantity" />
                             <field name="thickness" />
-
+                            <field name="allow_rot" />
                         </group>
                         <group string="Material">
                             <field name="material_name" string="material"/>
@@ -57,6 +57,7 @@
                                     <field name="available" />
                                     <field name="length" />
                                     <field name="width" />
+                                    <field name="percentage_loss" />
                                     <field name="best" />
                                 </tree>
                             </field>
