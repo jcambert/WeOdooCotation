@@ -38,6 +38,9 @@ class Model(models.AbstractModel):
         res =super(models.AbstractModel, self).__getattr__(key)
         return res
 
+    def map(self,fn):
+        return map(fn,self)
+
 class BaseArchive(models.AbstractModel):
     _name='base.archive.mixin'
     _description='Archive Mixin'

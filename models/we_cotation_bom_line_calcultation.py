@@ -19,7 +19,7 @@ class WeCotationBomLineCalculation(Model):
     material_name=fields.Char('Material name')
     material_volmass=fields.Float('Volumic mass')
     material_price=fields.Float('Material Price')
-    allow_rot=fields.Float('90° rotation',default=True)
+    allow_rot=fields.Boolean('90° rotation',default=True)
 
     piece_weight=fields.Float('Piece Weight',compute="_compute_best",store=True,readonly=True)
     piece_surface=fields.Float('Piece Surface',compute="_compute_best",store=True,readonly=True)
@@ -144,9 +144,12 @@ class WeCotationBomLineCalculation(Model):
     @api.onchange('allow_rot')
     def _on_allow_rot_changed(self):
         self.ensure_one()
-        for record in self.allowed_sheetmetal_ids:
-            record.available= record.length<record.width and self.allow_rot   
+        if self.allow_rot:
+            return
+        records=self.allowed_sheetmetal_ids.filtered(lambda r:r.length<r.width )
+        records.map(lambda r:r.disable_sheetmetal(False))
 
+    
 class WeCotationBomLineCalculationAllowedSheetmetal(Model):
     _name='we.cotation.bom.line.calculation.allowed.sheetmetal'
     _description='Allowed sheetmal for a calculation'
@@ -157,3 +160,15 @@ class WeCotationBomLineCalculationAllowedSheetmetal(Model):
     width=fields.Integer('Width')
     percentage_loss=fields.Float('Loss',default=0.0)
     best=fields.Boolean('Best',readonly=True)
+
+    @api.model
+    def set_available(self,value=True):
+        self.ensure_one()
+        self.available=value
+        return True
+
+    @api.onchange('available')
+    def _on_available_changed(self):
+        for record in self:
+            if record.length<record.width and record.available and not record.line_calculation.allow_rot:
+                record.available=False
