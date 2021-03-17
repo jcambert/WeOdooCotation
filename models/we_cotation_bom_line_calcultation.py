@@ -147,7 +147,7 @@ class WeCotationBomLineCalculation(Model):
         if self.allow_rot:
             return
         records=self.allowed_sheetmetal_ids.filtered(lambda r:r.length<r.width )
-        records.map(lambda r:r.disable_sheetmetal(False))
+        records.map(lambda r:r.set_available(False))
 
     
 class WeCotationBomLineCalculationAllowedSheetmetal(Model):
