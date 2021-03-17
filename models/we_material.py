@@ -6,13 +6,15 @@ from .models import Model
 class WeMaterial(Model):
     _name='we.material'
     _description='Generic Material'
-    _order='name'
+    # _inherit=['sequence.mixin']
+    _order='sequence'
     _sql_constraints = [
         ('material_name_uniq','unique(name)',"This name already exist !")
     ]
+    sequence = fields.Integer('Sequence', default=1, help="Used to order material, First is default")
     name=fields.Char('Name',required=True)
     volmass=fields.Float('Volumic Mass',required=True,help="in m3/Kg")
-    default=fields.Boolean('Default',default=False)
+    
 
     @api.constrains('volmass')
     def _check_volmass(self):

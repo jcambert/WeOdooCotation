@@ -13,6 +13,7 @@
                             <field name="type" />
                             <field name="no_best" invisible="1"/>
                             <field name="no_value" invisible="1"/>
+                            <field name="currency_id" invisible="0" />
                             <div class="o_row">
                                 <div class="alert alert-danger text-wrap text-capitalize font-weight-bold lead" attrs="{'invisible': [ ('no_value', '=', False)]}">
                                 Setup/Check your values
@@ -32,7 +33,7 @@
                             <field name="allow_rot" />
                         </group>
                         <group string="Material">
-                            <field name="material_name" string="material"/>
+                            <field name="material_id" string="material" widget="many2one"/>
                             <field name="material_volmass" string="Volumic mass"/>
                             <field name="material_price" string="Price"/>
                         </group>

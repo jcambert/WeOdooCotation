@@ -5,7 +5,7 @@ from .res_config_settings import DIMENSION_ATTRIBUTE
 class WeCotationBomLineCalculation(Model):
     _name='we.cotation.bom.line.calculation'
     _description = 'Helper that aids you calculate the good bom quantity'
-    # _models={'attribute':'product.attribute','allowed_sheetmetal':'we.cotation.bom.line.calculation.allowed.sheetmetal'}
+    _models={'attribute':'product.attribute','allowed_sheetmetal':'we.cotation.bom.line.calculation.allowed.sheetmetal','material':'we.material'}
     #set default to True when calculation test maded
     bom_line=fields.Many2one('mrp.bom.line',string='Bom',required=False)
     type=fields.Selection([('sheetmetal','Sheetmetal'),('beam','Beam'),('operation','Operation')],default='sheetmetal',string='Type')
@@ -16,9 +16,9 @@ class WeCotationBomLineCalculation(Model):
     width=fields.Integer('Width',default=0)
     thickness=fields.Float('Thickness')
     quantity=fields.Integer('Quantity')
-    material_name=fields.Char('Material name')
-    material_volmass=fields.Float('Volumic mass')
-    material_price=fields.Float('Material Price')
+    material_id=fields.Many2one('we.material',string='Material ',required=True)
+    material_volmass=fields.Float('Volumic mass',related='material_id.volmass',readonly=True)
+    material_price=fields.Monetary('Material Price')
     allow_rot=fields.Boolean('90° rotation',default=True)
 
     piece_weight=fields.Float('Piece Weight',compute="_compute_best",store=True,readonly=True)
@@ -28,8 +28,9 @@ class WeCotationBomLineCalculation(Model):
     total_piece_weight=fields.Float('Total Weight',compute="_compute_total",store=True,readonly=True)
     total_piece_surface=fields.Float('Total Surface',compute="_compute_total",store=True,readonly=True)
 
-    unit_price=fields.Float('Unit Price',compute="_compute_amount",store=True,readonly=True)
-    total_price=fields.Float('total Price',compute="_compute_amount",store=True,readonly=True)
+    currency_id = fields.Many2one('res.currency', string='Currency',required=True,default=lambda self: self.env.company.currency_id.id)
+    unit_price=fields.Monetary('Unit Price',compute="_compute_amount",store=True,readonly=True)
+    total_price=fields.Monetary('total Price',compute="_compute_amount",store=True,readonly=True)
 
     x_space=fields.Integer('X Space',default=10)
     y_space=fields.Integer('Y Space',default=10)
@@ -60,13 +61,14 @@ class WeCotationBomLineCalculation(Model):
     @api.model
     def default_get(self, vals):
         std_dims=self.attribute.browse( self.get_param(DIMENSION_ATTRIBUTE))
-        
+        material_id=self.material.search([],limit=1)
         default_sheetmetal=[]
         for std_dim in std_dims.value_ids:
             default_sheetmetal.append((0,0,{'length':std_dim.length,'width':std_dim.width }))
             default_sheetmetal.append((0,0,{'length':std_dim.width,'width':std_dim.length  }))
+
         res = super().default_get(vals)      
-        res.update({'allowed_sheetmetal_ids':  default_sheetmetal})
+        res.update({'allowed_sheetmetal_ids':  default_sheetmetal,'material_id':material_id})
         return res
 
     @api.constrains('length','width','thickness')
@@ -89,10 +91,14 @@ class WeCotationBomLineCalculation(Model):
             best_percentage_loss=False
             best_id=False
             piece_surface=record.length*record.width
-            record.piece_weight=(piece_surface*record.thickness*record.material_volmass)/1000000
+            record.piece_weight=(piece_surface*record.thickness*record.material_id.volmass)/1000000
             record.piece_surface=piece_surface*2
             record.piece_perimetre=(record.length+record.width)*2
-            for std_dim in record.allowed_sheetmetal_ids.filtered(lambda r:r.available):
+
+            availables=record.allowed_sheetmetal_ids.filtered(lambda r:r.available)
+            for std_dim in record.allowed_sheetmetal_ids-availables:
+                std_dim.percentage_loss=percentage_loss=0
+            for std_dim in availables:
                 
                 cut_length=(std_dim.length-record.left_sheetmetal_protection-record.right_sheetmetal_protection)
                 cut_width=(std_dim.width-record.top_sheetmetal_protection-record.bottom_sheetmetal_protection-record.y_space)
@@ -147,7 +153,9 @@ class WeCotationBomLineCalculation(Model):
         if self.allow_rot:
             return
         records=self.allowed_sheetmetal_ids.filtered(lambda r:r.length<r.width )
-        records.map(lambda r:r.set_available(False))
+        for record in records:
+        # records.map(lambda r:r.set_available(False))
+            record.set_available(False)
 
     
 class WeCotationBomLineCalculationAllowedSheetmetal(Model):
@@ -170,5 +178,6 @@ class WeCotationBomLineCalculationAllowedSheetmetal(Model):
     @api.onchange('available')
     def _on_available_changed(self):
         for record in self:
-            if record.length<record.width and record.available and not record.line_calculation.allow_rot:
+            if record.length<record.width  and not record.line_calculation.allow_rot:
                 record.available=False
+                raise UserError(_('Rotation is not enabled'))

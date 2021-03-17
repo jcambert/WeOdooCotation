@@ -31,7 +31,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <t t-esc="doc.material_name"/>
+                                    <t t-esc="doc.material_id.name"/>
                                 </td>
                                 <td>
                                     <t t-esc="doc.length"/>
