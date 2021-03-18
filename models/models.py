@@ -35,7 +35,7 @@ class Model(models.AbstractModel):
         # print(key)
         if isinstance(key,str) and key in self._models:
             return self.env[self._models[key]]
-        res =super(models.AbstractModel, self).__getattr__(key)
+        res =super().__getattr__(key)
         return res
 
     def map(self,fn):
