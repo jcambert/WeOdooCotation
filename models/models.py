@@ -41,6 +41,11 @@ class Model(models.AbstractModel):
     def map(self,fn):
         return map(fn,self)
 
+class BaseCurrency(models.AbstractModel):
+    _name='base.currency.mixin'
+    _description='Currency Mixin'
+    currency_id = fields.Many2one('res.currency', string='Currency',required=True,default=lambda self: self.env.company.currency_id.id)
+
 class BaseArchive(models.AbstractModel):
     _name='base.archive.mixin'
     _description='Archive Mixin'

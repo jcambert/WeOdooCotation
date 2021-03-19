@@ -10,6 +10,10 @@
                     <group>
                         <field name="name" />
                         <field name="volmass" />
+                        <field name="volmass_uom_id" />
+                        <field name="unit_price" />
+                        <field name="currency_id" />
+                        <field name="price_uom_id" />
                     </group>
                 </sheet>
             </form>
@@ -19,16 +23,20 @@
         <field name="name">we.material.tree.view</field>
         <field name="model">we.material</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree editable="bottom">
                 <field name="name" />
                 <field name="volmass" />
+                <field name="volmass_uom_id" />
+                <field name="unit_price"  />
+                <field name="currency_id" />
+                <field name="price_uom_id" />
             </tree>
         </field>
     </record>
     <record id="we_material_action" model="ir.actions.act_window">
         <field name="name">Materials</field>
         <field name="res_model">we.material</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">tree,form</field>
     </record>
     <menuitem id="we_material_menu" name="Materials" action="we_material_action" parent="we_cotation_base_menu" sequence="4"/>
 </odoo>

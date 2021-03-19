@@ -11,11 +11,30 @@ class WeCotationBomLineCalculationTemplate(Model):
     sequence = fields.Integer('Sequence', default=1, help="Used to order template")
     type=fields.Selection(TYPE_SELECTION,default='sheetmetal',string='Type')
     length=fields.Integer('Length',default=200)
+    length_uom_id=fields.Many2one('uom.uom', string='Length unit', required=True)
     width=fields.Integer('Width',default=100)
+    width_uom_id=fields.Many2one('uom.uom', string='Width unit', required=True)
     thickness=fields.Float('Thickness',default=0.0)
+    thickness_uom_id=fields.Many2one('uom.uom', string='Thickness unit', required=True)
     quantity=fields.Integer('Quantity',default=1)
     material_id=fields.Many2one('we.material',string='Material ',required=True)
     allow_rot=fields.Boolean('90° rotation',default=True)
+
+    x_space=fields.Integer('X Space',default=10)
+    x_space_uom_id=fields.Many2one('uom.uom', string='X gap unit', required=True)
+    y_space=fields.Integer('Y Space',default=10)
+    y_space_uom_id=fields.Many2one('uom.uom', string='Y gap unit', required=True)
+
+    left_sheetmetal_protection=fields.Integer('Left',default=0)
+    left_sheetmetal_protection_uom_id=fields.Many2one('uom.uom', string='Unity of measure', required=True)
+    right_sheetmetal_protection=fields.Integer('Right',default=0)
+    right_sheetmetal_protection_uom_id=fields.Many2one('uom.uom', string='Unity of measure', required=True)
+    top_sheetmetal_protection=fields.Integer('Top',default=0)
+    top_sheetmetal_protection_uom_id=fields.Many2one('uom.uom', string='Unity of measure', required=True)
+    bottom_sheetmetal_protection=fields.Integer('Bottom',default=0)
+    bottom_sheetmetal_protection_uom_id=fields.Many2one('uom.uom', string='Unity of measure', required=True)
+
+    piece_weight_uom_id=fields.Many2one('uom.uom', string='Weight unit', required=True)
 
 class WeCotationBomLineCalculation(Model):
     _name='we.cotation.bom.line.calculation'
@@ -31,13 +50,20 @@ class WeCotationBomLineCalculation(Model):
 
     
     length=fields.Integer('Length',default=0)
+    length_uom_id=fields.Many2one('uom.uom', string='Length unit', required=True)
     width=fields.Integer('Width',default=0)
+    width_uom_id=fields.Many2one('uom.uom', string='Width unit', required=True)
     thickness=fields.Float('Thickness')
+    thickness_uom_id=fields.Many2one('uom.uom', string='Thickness unit', required=True)
     quantity=fields.Integer('Quantity')
     material_id=fields.Many2one('we.material',string='Material ',required=True)
     material_volmass=fields.Float('Volumic mass',related='material_id.volmass',readonly=True)
-    material_price=fields.Monetary('Material Price')
+    material_volmass_uom_id=fields.Many2one('uom.uom',related='material_id.volmass_uom_id',readonly=True)
+    material_unit_price=fields.Monetary('Material Price')
+    material_price_uom_id=fields.Many2one('uom.uom', string='Unity of measure', required=True)
     allow_rot=fields.Boolean('90° rotation',default=True)
+    
+    piece_weight_uom_id=fields.Many2one('uom.uom', string='Weight unit', required=True)
 
     piece_weight=fields.Float('Piece Weight',compute="_compute_best",store=True,readonly=True)
     piece_surface=fields.Float('Piece Surface',compute="_compute_best",store=True,readonly=True)
@@ -51,27 +77,33 @@ class WeCotationBomLineCalculation(Model):
     total_price=fields.Monetary('total Price',compute="_compute_amount",store=True,readonly=True)
 
     x_space=fields.Integer('X Space',default=10)
+    x_space_uom_id=fields.Many2one('uom.uom', string='X gap unit', required=True)
     y_space=fields.Integer('Y Space',default=10)
+    y_space_uom_id=fields.Many2one('uom.uom', string='Y gap unit', required=True)
 
     left_sheetmetal_protection=fields.Integer('Left',default=0)
+    left_sheetmetal_protection_uom_id=fields.Many2one('uom.uom', string='Unity of measure', required=True)
     right_sheetmetal_protection=fields.Integer('Right',default=0)
+    right_sheetmetal_protection_uom_id=fields.Many2one('uom.uom', string='Unity of measure', required=True)
     top_sheetmetal_protection=fields.Integer('Top',default=0)
+    top_sheetmetal_protection_uom_id=fields.Many2one('uom.uom', string='Unity of measure', required=True)
     bottom_sheetmetal_protection=fields.Integer('Bottom',default=0)
+    bottom_sheetmetal_protection_uom_id=fields.Many2one('uom.uom', string='Unity of measure', required=True)
 
     best_length=fields.Float('Length',compute="_compute_best",store=True,readonly=True)
     best_width=fields.Float('Width',compute="_compute_best",store=True,readonly=True)
     best_sheetmetal_length=fields.Float('Sheetmetal length',compute="_compute_best",store=True,readonly=True)
     best_sheetmetal_width=fields.Float('Sheetmetal width',compute="_compute_best",store=True,readonly=True)
-    best_sheetmetal_format=fields.Char('Sheetmetal Format',compute="_compute_format",readonly=True)
-    best_piece_format=fields.Char('Piece Format',compute="_compute_format",readonly=True)
+    best_sheetmetal_format=fields.Char('Sheetmetal Format',compute="_compute_format",default="",readonly=True)
+    best_piece_format=fields.Char('Piece Format',compute="_compute_format",default="",readonly=True)
 
     qty_per_sheetmetal=fields.Integer('Quantity',compute="_compute_best",store=True,readonly=True)
     weight_per_piece=fields.Float('Weight',compute="_compute_best",store=True,readonly=True)
     percentage_loss=fields.Float('Percentage of loss',compute="_compute_best",store=True,readonly=True)
 
     allowed_sheetmetal_ids = fields.One2many('we.cotation.bom.line.calculation.allowed.sheetmetal','line_calculation',string='Alloweds')
-    no_best=fields.Boolean('No best',compute="_compute_best",store=True,readonly=True)
-    no_value=fields.Boolean(compute="_compute_best",readonly=True)
+    no_best=fields.Boolean('No best',compute="_compute_best",default=False, store=True,readonly=True)
+    no_value=fields.Boolean(compute="_compute_no_value",default=False,readonly=True)
 
     def name_get(self):
         return [(record.id, '%s %sx%s' % (record.type, record.length,record.width ) ) for record in self]
@@ -88,13 +120,17 @@ class WeCotationBomLineCalculation(Model):
 
         res = super().default_get(vals)      
         data={'allowed_sheetmetal_ids':  default_sheetmetal}
+        res.update(data)
+
+        data={}
         if tmpl:
             data['tmpl_id']=tmpl
         else:
             data['material_id']=self.material.search([],limit=1)
         res.update(data)
-        for record in self:
-            record.compute_best()
+        # print(res)
+        # for record in self:
+        #     record.compute_best()
         return res
 
     @api.constrains('length','width','thickness')
@@ -119,6 +155,7 @@ class WeCotationBomLineCalculation(Model):
         """ Find the best format based on rectangular """
         best_percentage_loss=False
         best_id=False
+        
         piece_surface=record.length*record.width
         record.piece_weight=(piece_surface*record.thickness*record.material_id.volmass)/1000000
         record.piece_surface=piece_surface*2
@@ -160,14 +197,19 @@ class WeCotationBomLineCalculation(Model):
         
         for record in self.filtered(lambda r:r.type in ['sheetmetal']):
             record.compute_best()
-    
+
+    @api.depends('length','width','thickness')
+    def _compute_no_value(self):
+        for record in self:
+            record.no_value=record.length<=0 or record.width<=0 or record.thickness<=0
+            
     @api.depends('best_sheetmetal_length','best_sheetmetal_width')
     def _compute_format(self):
-        filtered=self.filtered(lambda r:not r.no_best)
-        for record in filtered:
+        records=self.filtered(lambda r:not r.no_best)
+        for record in records:
             record.best_sheetmetal_format='%.2f x %.2f' % (record.length,record.width)
             record.best_piece_format='%.2f x %.2f' % (record.best_length,record.best_width)
-        for record in self - filtered:
+        for record in (self - records):
              record.best_sheetmetal_format= record.best_piece_format='' 
 
     @api.depends('quantity','piece_weight','piece_surface')
@@ -176,24 +218,28 @@ class WeCotationBomLineCalculation(Model):
             record.total_piece_weight=record.quantity*record.piece_weight
             record.total_piece_surface=record.quantity*record.piece_surface
     
-    @api.depends('material_price','piece_weight','quantity')
+    @api.depends('material_unit_price','piece_weight','quantity')
     def _compute_amount(self):
         for record in self:
-            record.unit_price=record.material_price*record.piece_weight
+            record.unit_price=record.material_unit_price*record.piece_weight
             record.total_price=record.unit_price*record.quantity
 
     @api.onchange('tmpl_id')
     def _on_tmpl_id_changed(self):
+        ignore_fields=('id','sequence','active','name')
         for record in self:
-            record.type=record.tmpl_id.type
-            record.length=record.tmpl_id.length
-            record.width=record.tmpl_id.width
-            record.thickness=record.tmpl_id.thickness
-            record.quantity=record.tmpl_id.quantity
-            record.material_id=record.tmpl_id.material_id
-            record.allow_rot=record.tmpl_id.allow_rot
-            record._compute_best()
+            fields=(field for field in record.tmpl_id._fields if field not in ignore_fields)
+            for field in fields:
+                record[field]=record.tmpl_id[field]
             
+            record._compute_best()
+
+    @api.onchange('material_id')
+    def _on_material_id_changed(self):
+        for record in self:
+            record.material_unit_price=record.material_id.unit_price
+            record.material_price_uom_id=record.material_id.price_uom_id
+
     @api.onchange('allow_rot')
     def _on_allow_rot_changed(self):
         self.ensure_one()

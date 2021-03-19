@@ -24,15 +24,64 @@
             <form string="Cotation Line Template">
                 <sheet>
                     <group>
-                        <group>
+                        <group string="General">
                             <field name="name" />
                             <field name="type" />
-                            <field name="length" />
-                            <field name="width" />
-                            <field name="thickness" />
+                            <label for="length" string="Length"/>
+                            <div class="o_row">
+                                <field name="length" />
+                                <field name="length_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
+                            <label for="width" string="Width"/>
+                            <div class="o_row">
+                                <field name="width" />
+                                <field name="width_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
+                            <label for="thickness" string="Thickness"/>
+                            <div class="o_row">
+                                <field name="thickness" />
+                                <field name="thickness_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
                             <field name="quantity" />
                             <field name="material_id" />
                             <field name="allow_rot" />
+                        </group>
+                        <group string="Gaps">
+                            <label for="x_space" string="X"/>
+                            <div class="o_row">
+                                <field name="x_space" />
+                                <field name="x_space_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
+                            <label for="y_space" string="Y"/>
+                            <div class="o_row">
+                                <field name="y_space" />
+                                <field name="y_space_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
+                        </group>
+                        <group string="Protection">
+                            <label for="left_sheetmetal_protection" string="Left"/>
+                            <div class="o_row">
+                                <field name="left_sheetmetal_protection" />
+                                <field name="left_sheetmetal_protection_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
+                            <label for="right_sheetmetal_protection" string="Right"/>
+                            <div class="o_row">
+                                <field name="right_sheetmetal_protection" />
+                                <field name="right_sheetmetal_protection_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
+                            <label for="top_sheetmetal_protection" string="Top"/>
+                            <div class="o_row">
+                                <field name="top_sheetmetal_protection" />
+                                <field name="top_sheetmetal_protection_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
+                            <label for="bottom_sheetmetal_protection" string="Bottom"/>
+                            <div class="o_row">
+                                <field name="bottom_sheetmetal_protection" />
+                                <field name="bottom_sheetmetal_protection_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
+                        </group>
+                        <group string="Result">
+                            <field name="piece_weight_uom_id" />
                         </group>
                     </group>
                 </sheet>
@@ -66,31 +115,81 @@
 
                         <div class="clearfix"/>
                         <group string="Piece dimension">
-                            <field name="length" />
-                            <field name="width" />
+                            <label for="length" string="Length"/>
+                            <div class="o_row">
+                                <field name="length" />
+                                <field name="length_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
+                            <label for="width" string="Width"/>
+                            <div class="o_row">
+                                <field name="width" />
+                                <field name="width_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
+                            <label for="thickness" string="Thickness"/>
+                            <div class="o_row">
+                                <field name="thickness" />
+                                <field name="thickness_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
                             <field name="quantity" />
-                            <field name="thickness" />
                             <field name="allow_rot" />
                         </group>
                         <group string="Material">
                             <field name="material_id" string="material" widget="many2one"/>
-                            <field name="material_volmass" string="Volumic mass"/>
-                            <field name="material_price" string="Price"/>
+                            <label for="material_volmass" string="Volumic mass"/>
+                            <div class="o_row">
+                                <field name="material_volmass" />
+                                <field name="material_volmass_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
+                            <label for="material_unit_price" string="Price"/>
+                            <div class="o_row">
+                                <field name="material_unit_price"/>
+                                <field name="material_price_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
+
                         </group>
                         <group string="Informations">
                             <field name="piece_perimetre" />
                             <field name="piece_surface" />
-                            <field name="piece_weight" />
+                            <label for="piece_weight" string="Weight"/>
+                            <div class="o_row">
+                                <field name="piece_weight" />
+                                <field name="piece_weight_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
                         </group>
-                        <group string="Distances">
-                            <field name="x_space" />
-                            <field name="y_space" />
+                        <div class="clearfix"/>
+                        <group string="Gaps">
+                            <label for="x_space" string="X"/>
+                            <div class="o_row">
+                                <field name="x_space" />
+                                <field name="x_space_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
+                            <label for="y_space" string="X"/>
+                            <div class="o_row">
+                                <field name="y_space" />
+                                <field name="y_space_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
                         </group>
                         <group string="Protection">
-                            <field name="left_sheetmetal_protection" />
-                            <field name="right_sheetmetal_protection" />
-                            <field name="top_sheetmetal_protection" />
-                            <field name="bottom_sheetmetal_protection" />
+                            <label for="left_sheetmetal_protection" string="Left"/>
+                            <div class="o_row">
+                                <field name="left_sheetmetal_protection" />
+                                <field name="left_sheetmetal_protection_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
+                            <label for="right_sheetmetal_protection" string="Right"/>
+                            <div class="o_row">
+                                <field name="right_sheetmetal_protection" />
+                                <field name="right_sheetmetal_protection_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
+                            <label for="top_sheetmetal_protection" string="Top"/>
+                            <div class="o_row">
+                                <field name="top_sheetmetal_protection" />
+                                <field name="top_sheetmetal_protection_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
+                            <label for="bottom_sheetmetal_protection" string="Bottom"/>
+                            <div class="o_row">
+                                <field name="bottom_sheetmetal_protection" />
+                                <field name="bottom_sheetmetal_protection_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
                         </group>
                         <group string="Formats">
                             <field name="allowed_sheetmetal_ids" mode="tree">
@@ -107,9 +206,17 @@
                             <field name="best_piece_format" string="Format piece"/>
                             <field name="best_sheetmetal_format" string="format sheetmetal"/>
                             <field name="qty_per_sheetmetal" />
-                            <field name="weight_per_piece" />
+                            <label for="weight_per_piece" string="Mo Weight"/>
+                            <div class="o_row">
+                                <field name="weight_per_piece" />
+                                <field name="piece_weight_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
                             <field name="percentage_loss" />
-                            <field name="total_piece_weight" />
+                            <label for="total_piece_weight" string="Total Mo Weight"/>
+                            <div class="o_row">
+                                <field name="total_piece_weight" />
+                                <field name="piece_weight_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
                             <field name="total_piece_surface" />
                         </group>
                         <group string="Cost">
