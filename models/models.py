@@ -1,6 +1,7 @@
 from odoo import models, fields, api,_
 from . import models as _inner_models
 from ast import literal_eval as _literal_eval
+from .res_config_settings import UOM_SURFACE,UOM_WEIGHT,UOM_LENGTH,UOM_VOLUMIC_MASS
 import logging
 import re
 import math
@@ -58,3 +59,42 @@ class BaseSequence(models.AbstractModel):
     _name='base.sequence.mixin'
     _description='Sequence Mixin'
     sequence = fields.Integer()
+
+class BaseUomConverter(models.AbstractModel):
+    _name='base.uom.converter'
+    _description='Base uom converter'
+    
+    base_surface_uom=fields.Many2one('uom.uom', string='Base Surface unit', required=True,readonly=True,default=lambda r:r.env['uom.uom'].search( [('category_id.id','=', literal_eval( r.env['ir.config_parameter'].get_param(UOM_SURFACE) or False) ),('uom_type','=','reference')],limit=1 ))
+    base_length_uom=fields.Many2one('uom.uom', string='Base Length unit', required=True,readonly=True,default=lambda r:r.env['uom.uom'].search( [('category_id.id','=', literal_eval( r.env['ir.config_parameter'].get_param(UOM_LENGTH) or False) ),('uom_type','=','reference')],limit=1 ))
+    base_weight_uom=fields.Many2one('uom.uom', string='Base weight unit', required=True,readonly=True,default=lambda r:r.env['uom.uom'].search( [('category_id.id','=', literal_eval( r.env['ir.config_parameter'].get_param(UOM_WEIGHT) or False) ),('uom_type','=','reference')],limit=1 ))
+
+    @api.model
+    def default_get(self, vals):
+        res = super().default_get(vals)
+        return res
+
+    @api.model
+    def _get_base_uom(self, key):
+        id=literal_eval( self.env['ir.config_parameter'].get_param(key) or False)
+        return self.env['uom.uom'].search( [('category_id.id','=', id ),('uom_type','=','reference')],limit=1 )
+    @api.model
+    def get_base_surface(self):
+        self.ensure_one()
+        if self.base_surface_uom:
+            return self.base_surface_uom
+        self.base_surface_uom=self._get_base_uom(UOM_SURFACE)
+        return self.base_surface_uom
+    @api.model
+    def get_base_length(self):
+        self.ensure_one()
+        if self.base_length_uom:
+            return self.base_length_uom
+        self.base_length_uom=self._get_base_uom(UOM_LENGTH)
+        return self.base_length_uom
+    @api.model
+    def get_base_weight(self):
+        self.ensure_one()
+        if self.base_weight_uom:
+            return self.base_weight_uom
+        self.base_weight_uom=self._get_base_uom(UOM_WEIGHT)
+        return self.base_weight_uom

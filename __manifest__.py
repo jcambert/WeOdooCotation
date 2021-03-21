@@ -39,6 +39,7 @@
         'views/we_cotation_order_line_category.xml',
         'views/we_cotation_bom_line_calculation_views.xml',
         'report/report.xml',
+        'data/uom.xml',
         'data/product_attribute.xml',
         'data/product_categories.xml'
     ],

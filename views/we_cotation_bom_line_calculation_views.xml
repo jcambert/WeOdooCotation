@@ -81,7 +81,11 @@
                             </div>
                         </group>
                         <group string="Result">
+                            <field name="piece_perimetre_uom_id" />
+                            <field name="piece_surface_uom_id" />
                             <field name="piece_weight_uom_id" />
+                            <field name="best_piece_format_uom_id" />
+                            <field name="best_sheetmetal_format_uom_id" />
                         </group>
                     </group>
                 </sheet>
@@ -148,8 +152,16 @@
 
                         </group>
                         <group string="Informations">
-                            <field name="piece_perimetre" />
-                            <field name="piece_surface" />
+                            <label for="piece_perimetre" string="Perimeter"/>
+                            <div class="o_row">
+                                <field name="piece_perimetre" />
+                                <field name="piece_perimetre_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
+                            <label for="piece_surface_painting" string="Surface painting"/>
+                            <div class="o_row">
+                                <field name="piece_surface_painting" />
+                                <field name="piece_surface_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
                             <label for="piece_weight" string="Weight"/>
                             <div class="o_row">
                                 <field name="piece_weight" />
@@ -197,14 +209,31 @@
                                     <field name="available" />
                                     <field name="length" />
                                     <field name="width" />
+                                    <field name="uom_id" />
                                     <field name="percentage_loss" />
+                                    <field name="nb_x" />
+                                    <field name="nb_y" />
+                                    <field name="qty_per_sheetmetal" />
                                     <field name="best" />
                                 </tree>
                             </field>
                         </group>
                         <group string="Resultat">
-                            <field name="best_piece_format" string="Format piece"/>
-                            <field name="best_sheetmetal_format" string="format sheetmetal"/>
+                            <label for="best_piece_format" string="Best Piece"/>
+                            <div class="o_row">
+                                <field name="best_piece_format" string="Format piece"/>
+                                <div class="oe_edit_only">
+                                    <field name="best_piece_format_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                                </div>
+                            </div>
+                            <label for="best_sheetmetal_format" string="Best Sheetmetal"/>
+                            <div class="o_row">
+                                <field name="best_sheetmetal_format" string="format sheetmetal"/>
+                                <div class="oe_edit_only">
+                                    <field name="best_sheetmetal_format_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                                </div>
+                            </div>
+
                             <field name="qty_per_sheetmetal" />
                             <label for="weight_per_piece" string="Mo Weight"/>
                             <div class="o_row">
@@ -217,7 +246,11 @@
                                 <field name="total_piece_weight" />
                                 <field name="piece_weight_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
                             </div>
-                            <field name="total_piece_surface" />
+                            <label for="total_piece_surface_painting" string="Total Surf. Paint."/>
+                            <div class="o_row">
+                                <field name="total_piece_surface_painting" />
+                                <field name="piece_surface_uom_id" options="{'no_open':True,'no_create':True}" groups="uom.group_uom"/>
+                            </div>
                         </group>
                         <group string="Cost">
                             <field name="unit_price" />
@@ -235,7 +268,9 @@
             <tree>
                 <field name="type" />
                 <field name="length" />
+                <field name="length_uom_id" />
                 <field name="width" />
+                <field name="width_uom_id" />
             </tree>
         </field>
     </record>

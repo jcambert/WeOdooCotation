@@ -77,6 +77,101 @@
                                 </div>
                             </div>
                         </div>
+                        <h2>Unit of Measure</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box ">
+                                <div class="o_setting_right_pane">
+                                    <label for="uom_unite"/>
+                                    <div class="text-muted">
+                                        Unite de mesure des unités
+                                    </div>
+                                    <div class="content-group">
+                                        <div class="mt16">
+                                            <field name="uom_unite" class="o_light_label"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box ">
+                                <div class="o_setting_right_pane">
+                                    <label for="uom_weight"/>
+                                    <div class="text-muted">
+                                        Unite de mesure des poids
+                                    </div>
+                                    <div class="content-group">
+                                        <div class="mt16">
+                                            <field name="uom_weight" class="o_light_label"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box ">
+                                <div class="o_setting_right_pane">
+                                    <label for="uom_time"/>
+                                    <div class="text-muted">
+                                        Unite de mesure de temps
+                                    </div>
+                                    <div class="content-group">
+                                        <div class="mt16">
+                                            <field name="uom_time" class="o_light_label"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box ">
+                                <div class="o_setting_right_pane">
+                                    <label for="uom_length"/>
+                                    <div class="text-muted">
+                                        Unite de mesure de Distance
+                                    </div>
+                                    <div class="content-group">
+                                        <div class="mt16">
+                                            <field name="uom_length" class="o_light_label"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box ">
+                                <div class="o_setting_right_pane">
+                                    <label for="uom_volume"/>
+                                    <div class="text-muted">
+                                        Unite de mesure de Volume
+                                    </div>
+                                    <div class="content-group">
+                                        <div class="mt16">
+                                            <field name="uom_volume" class="o_light_label"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box ">
+                                <div class="o_setting_right_pane">
+                                    <label for="uom_volumic_mass"/>
+                                    <div class="text-muted">
+                                        Unite de mesure de Masse Volumique
+                                    </div>
+                                    <div class="content-group">
+                                        <div class="mt16">
+                                            <field name="uom_volumic_mass" class="o_light_label"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box ">
+                                <div class="o_setting_right_pane">
+                                    <label for="uom_surface"/>
+                                    <div class="text-muted">
+                                        Unite de mesure de Surface
+                                    </div>
+                                    <div class="content-group">
+                                        <div class="mt16">
+                                            <field name="uom_surface" class="o_light_label"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <h2>Configuration</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box ">

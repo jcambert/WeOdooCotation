@@ -5,6 +5,7 @@
         <record model="product.attribute" id="product_attribute_dimension_tole">
             <field name="name">Dimension Tole</field>
             <field name="display_type">dimension</field>
+            <field name="uom_id" ref="uom.uom_categ_length"></field>
         </record>
         <record model="product.attribute.value" id="product_attribute_dimension_tole_xs">
             <field name="attribute_id" ref="product_attribute_dimension_tole"/>
@@ -28,6 +29,7 @@
         <record model="product.attribute" id="product_attribute_epaisseur_tole">
             <field name="name">Epaisseur Tole</field>
             <field name="display_type">thickness</field>
+            <field name="uom_id" ref="uom.uom_categ_length"></field>
         </record>
         <record model="product.attribute.value" id="product_attribute_epaisseur_tole_10">
             <field name="attribute_id" ref="product_attribute_epaisseur_tole"/>
@@ -125,19 +127,23 @@
 
         <record  model="we.material" id="we_material_steel">
             <field name="name">Acier</field>
-            <field name="volmass">7.8</field>
+            <field name="volmass">7800</field>
+            <field name="price_uom_id" ref="uom.product_uom_kgm" />
         </record>
         <record  model="we.material" id="we_material_stainlesssteel">
             <field name="name">Inox</field>
-            <field name="volmass">7.8</field>
+            <field name="volmass">7800</field>
+            <field name="price_uom_id" ref="uom.product_uom_kgm" />
         </record>
         <record  model="we.material" id="we_material_aluminium">
             <field name="name">Aluminium</field>
-            <field name="volmass">2.7</field>
+            <field name="volmass">2700</field>
+            <field name="price_uom_id" ref="uom.product_uom_kgm" />
         </record>
         <record  model="we.material" id="we_material_coper">
             <field name="name">Coper</field>
-            <field name="volmass">9</field>
+            <field name="volmass">9000</field>
+            <field name="price_uom_id" ref="uom.product_uom_kgm" />
         </record>
     </data>
 </odoo>

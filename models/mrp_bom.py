@@ -23,4 +23,8 @@ class WeBom(Model):
 class WeBomLine(Model):
     _inherit = 'mrp.bom.line'
 
+    def get_calcul_domain(self):
+        return [('category_id.id', '=', self.get_param(UOM_VOLUMIC_MASS))]
+    calcul_id=fields.Many2one('we.cotation.bom.line.calculation',string='Calcul',domain=lambda r:r.get_calcul_domain())
+
     
