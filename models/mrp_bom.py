@@ -1,7 +1,7 @@
 from odoo.exceptions import AccessError, UserError
 from odoo import models, fields, api, _
 from .models import Model
-
+from .res_config_settings import DIMENSION_ATTRIBUTE, UOM_SURFACE, UOM_WEIGHT, UOM_LENGTH, UOM_VOLUMIC_MASS
 class WeBom(Model):
     _inherit='mrp.bom'
 

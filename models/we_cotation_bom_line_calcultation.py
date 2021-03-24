@@ -232,6 +232,8 @@ class WeCotationBomLineCalculation(Model):
             _width = record.width_uom_id.convert_to_base(
                 record.width)+record.y_space_uom_id.convert_to_base(record.y_space)
 
+            if _length<= 0 or _width<=0:
+                continue
             nb_x = int(cut_length/_length)
             nb_y = int(cut_width/_width)
             nb = nb_x*nb_y
@@ -255,6 +257,8 @@ class WeCotationBomLineCalculation(Model):
         for std_dim in record.allowed_sheetmetal_ids.sorted(lambda r: r.percentage_loss):
             if first:
                 first = False
+                if std_dim.nb_x<=0 or std_dim.nb_y<=0:
+                    continue
                 record.best_length = record.get_base_length()._compute_quantity(std_dim.get_base_length()/std_dim.nb_x, record.length_uom_id)
                 record.best_width = record.get_base_length()._compute_quantity(std_dim.get_base_width()/std_dim.nb_y, record.width_uom_id)
                 record.best_sheetmetal_length = std_dim.length
