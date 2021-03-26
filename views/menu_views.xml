@@ -19,4 +19,8 @@
             groups="mrp.group_mrp_routings"
             parent="we_cotation_configuration_menu"
             sequence="90"/>
+    <menuitem id="we_mrp_bom_form_action"
+            action="mrp.mrp_bom_form_action"
+            parent="we_cotation_base_menu"
+            sequence="13"/>
 </odoo>

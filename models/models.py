@@ -58,7 +58,7 @@ class BaseArchive(models.AbstractModel):
 class BaseSequence(models.AbstractModel):
     _name='base.sequence.mixin'
     _description='Sequence Mixin'
-    sequence = fields.Integer()
+    sequence = fields.Integer(string='Sequence',default=1,help="Used to order line.")
 
 class BaseUomConverter(models.AbstractModel):
     _name='base.uom.converter'
@@ -67,11 +67,6 @@ class BaseUomConverter(models.AbstractModel):
     base_surface_uom=fields.Many2one('uom.uom', string='Base Surface unit', required=True,readonly=True,default=lambda r:r.env['uom.uom'].search( [('category_id.id','=', literal_eval( r.env['ir.config_parameter'].get_param(UOM_SURFACE) or False) ),('uom_type','=','reference')],limit=1 ))
     base_length_uom=fields.Many2one('uom.uom', string='Base Length unit', required=True,readonly=True,default=lambda r:r.env['uom.uom'].search( [('category_id.id','=', literal_eval( r.env['ir.config_parameter'].get_param(UOM_LENGTH) or False) ),('uom_type','=','reference')],limit=1 ))
     base_weight_uom=fields.Many2one('uom.uom', string='Base weight unit', required=True,readonly=True,default=lambda r:r.env['uom.uom'].search( [('category_id.id','=', literal_eval( r.env['ir.config_parameter'].get_param(UOM_WEIGHT) or False) ),('uom_type','=','reference')],limit=1 ))
-
-    @api.model
-    def default_get(self, vals):
-        res = super().default_get(vals)
-        return res
 
     @api.model
     def _get_base_uom(self, key):
